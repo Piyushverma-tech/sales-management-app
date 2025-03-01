@@ -22,8 +22,8 @@ const Topbar = ({
         <div className="h-16 flex items-center justify-between">
           {/* Logo Section */}
           <div className="flex items-center">
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
-              Salesphere
+            <span className="sm:text-3xl text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+              Salex
             </span>
           </div>
 
