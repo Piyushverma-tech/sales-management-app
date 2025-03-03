@@ -4,7 +4,13 @@ import { Moon, Sun, Search, Plus } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useTheme } from 'next-themes';
-import { useSalesStore } from '../useSalesStore';
+import { useSalesStore } from '../../useSalesStore';
+import dynamic from 'next/dynamic';
+
+const UserButton = dynamic(
+  () => import('@clerk/nextjs').then((mod) => mod.UserButton),
+  { ssr: false }
+);
 
 const Topbar = ({
   searchQuery,
@@ -15,6 +21,7 @@ const Topbar = ({
 }) => {
   const { theme, setTheme } = useTheme();
   const { setOpenDealDialog } = useSalesStore();
+  // const { user } = useUser();
 
   return (
     <div className="w-full ">
@@ -41,17 +48,27 @@ const Topbar = ({
             </div>
           </div>
 
-          {/* Add Sale and Theme Toggle buttons */}
+          {/* Add Sale, UserButton and Theme Toggle buttons */}
           <div className="flex items-center gap-6">
             {/* Add Sale Button */}
             <Button
-              className="flex items-center gap-1 bg-primary text-white"
+              className="flex items-center gap-1 bg-primary text-white mr-4"
               size="sm"
               onClick={() => setOpenDealDialog(true)}
             >
               <Plus className="sm:h-4 sm:w-4 h-3.5 w-3.5" />
               <span className="max-sm:hidden">Add Sale</span>
             </Button>
+
+            {/* User Button */}
+            <UserButton
+              afterSwitchSessionUrl="/"
+              appearance={{
+                elements: {
+                  userButtonAvatarBox: 'h-8 w-8',
+                },
+              }}
+            />
 
             {/* Theme Toggle */}
             <Button

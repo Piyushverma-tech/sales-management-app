@@ -1,5 +1,5 @@
 import { toast } from 'sonner';
-import { useSalesStore } from '../useSalesStore';
+import { useSalesStore } from '../../useSalesStore';
 
 import {
   AlertDialog,

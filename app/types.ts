@@ -8,9 +8,9 @@ export type SalePriority = 'Low' | 'Medium' | 'High';
 export type SaleType = {
   id: string;
   customerName: string;
-  dealValue: string; // assuming dealValue is a number, if it's a string, adjust accordingly
+  dealValue: string;
   status: SaleStatus;
-  contactDate: string; // assuming Contactdate is a Date object, if it's a string, adjust accordingly
+  contactDate: string;
   salesperson: string;
-  priority: SalePriority; // assuming priority is a string, if it's a number, adjust accordingly
+  priority: SalePriority;
 };

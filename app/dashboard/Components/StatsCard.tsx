@@ -1,8 +1,8 @@
 import { Card } from '@/components/ui/card';
-import { ChartLine, Handshake, Star } from 'lucide-react';
+import { ChartLine, Clock, Star } from 'lucide-react';
 import { ReactNode } from 'react';
 import { BiRupee } from 'react-icons/bi';
-import { useSalesStore } from '../useSalesStore';
+import { useSalesStore } from '../../useSalesStore';
 
 type SingleCard = {
   title: string;
@@ -35,14 +35,14 @@ export default function StatsCards() {
       value: allSales
         .filter((sale) => sale.status === 'In Progress')
         .length.toString(),
-      icon: <Handshake />,
+      icon: <Clock size={22} />,
     },
     {
       title: 'Deals Won',
       value: allSales
         .filter((sale) => sale.status === 'Closed Won')
         .length.toString(),
-      icon: <Star />,
+      icon: <Star size={22} />,
     },
 
     {
@@ -50,7 +50,7 @@ export default function StatsCards() {
       value:
         `${((closedSales.length / allSales.length) * 100).toFixed(2)}%` ||
         '0.00%',
-      icon: <ChartLine />,
+      icon: <ChartLine size={22} />,
     },
   ];
 
