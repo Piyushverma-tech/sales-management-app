@@ -6,7 +6,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { HiDocumentDownload } from 'react-icons/hi';
 import PaginationArea from './Pagination/PaginationArea';
 import { salesColumns } from './SalesColumn';
-import { salesData } from '@/app/sales-data';
 import {
   ColumnFiltersState,
   flexRender,
@@ -37,7 +36,7 @@ export interface PaginationType {
 export default function TableArea({ searchQuery }: { searchQuery: string }) {
   const { allSales, loadAllSales } = useSalesStore();
   const tabItems = [
-    { value: 'All', label: 'All Deals', count: salesData.length },
+    { value: 'All', label: 'All Deals', count: allSales.length },
     {
       value: 'high',
       label: 'High Priority',
