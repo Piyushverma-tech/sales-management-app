@@ -42,8 +42,8 @@ export default function ActionDropDown({ row }: { row: Row<SaleType> }) {
 
   async function copyToClipboard() {
     try {
-      const { id, ...rowDataWithoutId } = row.original;
-      if (id) {
+      const { _id, clerkUserId, ...rowDataWithoutId } = row.original;
+      if (_id && clerkUserId) {
         // Remove the id from the object
       }
       const formattedData = JSON.stringify(rowDataWithoutId, null, 2);

@@ -21,9 +21,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SalePriority, SaleStatus, SaleType } from '@/app/types';
 import { useEffect, useState } from 'react';
-import { nanoid } from 'nanoid';
 import { useSalesStore } from '@/app/useSalesStore';
-import { toast } from 'sonner';
 
 export const salesPersons = [
   'Jim Halpert',
@@ -95,7 +93,7 @@ export default function SalesDialog() {
     });
     if (!selectedSale) {
       const newSale: SaleType = {
-        id: nanoid(),
+        clerkUserId: '',
         customerName: data.customerName,
         dealValue: formattedSaleValue,
         status: selectedStatus,
@@ -104,33 +102,12 @@ export default function SalesDialog() {
         contactDate: data.contactDate.toDateString(),
       };
 
-      const result = await addSale(newSale);
-
-      if (result) {
-        toast('Sale Added!', {
-          description: `You have added a new sale for ${data.customerName} worth ${formattedSaleValue}`,
-          duration: 5000,
-          position: 'top-right',
-          action: {
-            label: 'Close',
-            onClick: () => toast.dismiss(),
-          },
-          style: {
-            fontSize: '14px',
-            backgroundColor: '#f0fdf4',
-            color: '#15803d',
-            border: '1px solid #bbf7d0',
-            borderRadius: '8px',
-            padding: '12px 16px',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-          },
-        });
-      }
-      console.log('Form Data:', newSale);
+      await addSale(newSale);
     } else {
       //edit sale logic
       const saleToUpdate: SaleType = {
-        id: selectedSale.id,
+        clerkUserId: selectedSale.clerkUserId,
+        _id: selectedSale._id,
         contactDate: data.contactDate.toDateString(),
         dealValue: formattedSaleValue,
         customerName: data.customerName,
@@ -139,28 +116,7 @@ export default function SalesDialog() {
         salesperson: selectedSalesperson,
       };
 
-      const result = await updateSale(saleToUpdate);
-
-      if (result) {
-        toast('Sale Updated!', {
-          description: `You have updated a sale for ${data.customerName} worth ${data.saleValue}`,
-          duration: 5000,
-          position: 'top-right',
-          action: {
-            label: 'Close',
-            onClick: () => toast.dismiss(),
-          },
-          style: {
-            fontSize: '14px',
-            backgroundColor: '#f0fdf4',
-            color: '#15803d',
-            border: '1px solid #bbf7d0',
-            borderRadius: '8px',
-            padding: '12px 16px',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-          },
-        });
-      }
+      await updateSale(saleToUpdate);
     }
     handleDialogClose();
     setOpenDealDialog(false);

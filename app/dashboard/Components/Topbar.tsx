@@ -52,7 +52,7 @@ const Topbar = ({
           <div className="flex items-center gap-6">
             {/* Add Sale Button */}
             <Button
-              className="flex items-center gap-1 bg-primary text-white mr-4"
+              className="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-blue-400 text-white mr-4"
               size="sm"
               onClick={() => setOpenDealDialog(true)}
             >

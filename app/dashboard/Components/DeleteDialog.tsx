@@ -1,4 +1,3 @@
-import { toast } from 'sonner';
 import { useSalesStore } from '../../useSalesStore';
 
 import {
@@ -23,28 +22,7 @@ export default function DeleteDialog() {
 
   async function deleteSaleFunction() {
     if (selectedSale) {
-      const result = await deleteSale(selectedSale.id);
-      if (result) {
-        toast('Sale Deleted!', {
-          description: 'The sale has been deleted successfully.',
-          duration: 5000,
-          position: 'top-right',
-          action: {
-            label: 'Close',
-            onClick: () => toast.dismiss(),
-          },
-          style: {
-            fontSize: '14px',
-            backgroundColor: '#f0fdf4',
-            color: '#15803d',
-            border: '1px solid #bbf7d0',
-            borderRadius: '8px',
-            padding: '12px 16px',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-          },
-        });
-        setOpenDeleteDialog(false);
-      }
+      await deleteSale(selectedSale._id!);
     }
   }
 

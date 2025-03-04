@@ -63,6 +63,8 @@ export default function TableArea({ searchQuery }: { searchQuery: string }) {
     pageSize: 8,
   });
 
+  const { isLoading } = useSalesStore();
+
   useEffect(() => {
     loadAllSales();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -184,7 +186,7 @@ export default function TableArea({ searchQuery }: { searchQuery: string }) {
             </TabsList>
             <Button
               onClick={downloadCSV}
-              className="flex items-center gap-2 max-lg:w-full max-sm:mt-4"
+              className="flex bg-gradient-to-r from-blue-600 to-blue-400 items-center gap-2 max-lg:w-full max-sm:mt-4"
             >
               <HiDocumentDownload className="size-5" />
               <span>Download as CSV</span>
@@ -234,6 +236,16 @@ export default function TableArea({ searchQuery }: { searchQuery: string }) {
                                     cell.column.columnDef.cell,
                                     cell.getContext()
                                   )}
+                                </TableCell>
+                              ))}
+                            </TableRow>
+                          ))
+                        ) : isLoading ? (
+                          Array.from({ length: 4 }).map((_, index) => (
+                            <TableRow key={`shimmer-${index}`} className="h-12">
+                              {table.getAllColumns().map((column, colIndex) => (
+                                <TableCell key={`shimmer-cell-${colIndex}`}>
+                                  <div className="animate-shimmer bg-gradient-to-r from-transparent via-gray-400/20 to-transparent w-full h-4 rounded"></div>
                                 </TableCell>
                               ))}
                             </TableRow>

@@ -6,7 +6,8 @@ export type SaleStatus =
 export type SalePriority = 'Low' | 'Medium' | 'High';
 
 export type SaleType = {
-  id: string;
+  clerkUserId: string;
+  _id?: string;
   customerName: string;
   dealValue: string;
   status: SaleStatus;
