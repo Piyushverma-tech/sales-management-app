@@ -7,6 +7,7 @@ import Topbar from './Components/Topbar';
 import StatsCards from './Components/StatsCard';
 import TableArea from './Components/TableArea/TableArea';
 import SalesDialog from './Components/DealDialog/DealDialog';
+import { SalesPersonManager } from './SalesPersonManager/SalesPersonManager';
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -19,6 +20,7 @@ export default function Home() {
       </Card>
       <StatsCards />
       <TableArea searchQuery={searchQuery} />
+      <SalesPersonManager />
       <SalesDialog />
     </div>
   );

@@ -10,6 +10,8 @@ interface SalesAppState {
   isLoading: boolean;
   openDealDialog: boolean;
   setOpenDealDialog: (open: boolean) => void;
+  openSalesPersonDialog: boolean;
+  setOpenSalesPersonDialog: (open: boolean) => void;
   setOpenDeleteDialog: (open: boolean) => void;
   loadAllSales: () => Promise<void>;
   addSale: (newSale: SaleType) => Promise<{ success: boolean }>;
@@ -23,6 +25,7 @@ export const useSalesStore = create<SalesAppState>((set) => ({
   isLoading: false,
   selectedSale: null,
   openDealDialog: false,
+  openSalesPersonDialog: false,
 
   // Setter for opening/closing the deal dialog
   setOpenDealDialog: (open) => {
@@ -32,6 +35,12 @@ export const useSalesStore = create<SalesAppState>((set) => ({
   // Setter for opening/closing the delete dialog
   setOpenDeleteDialog: (open) => {
     set({ openDeleteDialog: open });
+  },
+
+  // Setter for opening/closing the sales person dialog
+
+  setOpenSalesPersonDialog: (open) => {
+    set({ openSalesPersonDialog: open });
   },
 
   // Setter for selecting a sale

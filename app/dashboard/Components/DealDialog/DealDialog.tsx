@@ -22,15 +22,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { SalePriority, SaleStatus, SaleType } from '@/app/types';
 import { useEffect, useState } from 'react';
 import { useSalesStore } from '@/app/useSalesStore';
-
-export const salesPersons = [
-  'Jim Halpert',
-  'Dwight Schrute',
-  'Andy Bernard',
-  'Pam Beesly',
-  'Stanley Hudson',
-  'Ryan Howard',
-];
+import { useSalesPersonStore } from '@/app/useSalesPersonStore';
 
 const dialogSchema = z.object({
   contactDate: z
@@ -63,6 +55,8 @@ export default function SalesDialog() {
   const [selectedPriority, setSelectedPriority] = useState<SalePriority>('Low');
   const [selectedStatus, setSelectedStatus] =
     useState<SaleStatus>('In Progress');
+
+  const { salesPersons } = useSalesPersonStore();
 
   const [selectedSalesperson, setSelectedSalesperson] = useState(
     salesPersons[0]

@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { Moon, Sun, Search, Plus } from 'lucide-react';
+import { Moon, Sun, Search, UserPlus } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useTheme } from 'next-themes';
@@ -20,7 +20,7 @@ const Topbar = ({
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const { theme, setTheme } = useTheme();
-  const { setOpenDealDialog } = useSalesStore();
+  const { setOpenSalesPersonDialog } = useSalesStore();
   // const { user } = useUser();
 
   return (
@@ -50,14 +50,14 @@ const Topbar = ({
 
           {/* Add Sale, UserButton and Theme Toggle buttons */}
           <div className="flex items-center gap-6">
-            {/* Add Sale Button */}
+            {/* Add Sales person Button */}
             <Button
-              className="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-blue-400 text-white mr-4"
+              className="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-blue-400 text-white sm:mr-4"
               size="sm"
-              onClick={() => setOpenDealDialog(true)}
+              onClick={() => setOpenSalesPersonDialog(true)}
             >
-              <Plus className="sm:h-4 sm:w-4 h-3.5 w-3.5" />
-              <span className="max-sm:hidden">Add Sale</span>
+              <UserPlus className="w-4 h-4" />
+              <span className="max-sm:hidden">Sales Team</span>
             </Button>
 
             {/* User Button */}

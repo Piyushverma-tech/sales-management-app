@@ -27,6 +27,7 @@ import {
 import { useSalesStore } from '@/app/useSalesStore';
 import { SaleType } from '@/app/types';
 import Papa from 'papaparse';
+import { Plus } from 'lucide-react';
 
 export interface PaginationType {
   pageIndex: number;
@@ -62,7 +63,7 @@ export default function TableArea({ searchQuery }: { searchQuery: string }) {
     pageSize: 8,
   });
 
-  const { isLoading } = useSalesStore();
+  const { isLoading, setOpenDealDialog } = useSalesStore();
 
   useEffect(() => {
     loadAllSales();
@@ -183,9 +184,18 @@ export default function TableArea({ searchQuery }: { searchQuery: string }) {
                 </TabsTrigger>
               ))}
             </TabsList>
+            {/* Add Sale Button */}
+
+            <Button
+              onClick={() => setOpenDealDialog(true)}
+              className="flex bg-gradient-to-r from-blue-600 to-blue-400 text-white items-center gap-2 max-lg:w-full max-sm:mt-4 ml-auto mr-4"
+            >
+              <Plus className="sm:h-4 sm:w-4 h-3.5 w-3.5" />
+              <span>Add Sale</span>
+            </Button>
             <Button
               onClick={downloadCSV}
-              className="flex bg-gradient-to-r from-blue-600 to-blue-400 items-center gap-2 max-lg:w-full max-sm:mt-4"
+              className="flex bg-gradient-to-r from-blue-600 to-blue-400 text-white items-center gap-2 max-lg:w-full max-sm:mt-4"
             >
               <HiDocumentDownload className="size-5" />
               <span>Download as CSV</span>
