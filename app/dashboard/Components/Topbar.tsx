@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useTheme } from 'next-themes';
 import { useSalesStore } from '../../useSalesStore';
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 
 const UserButton = dynamic(
   () => import('@clerk/nextjs').then((mod) => mod.UserButton),
@@ -25,13 +26,11 @@ const Topbar = ({
 
   return (
     <div className="w-full ">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto sm:px-8 px-4">
         <div className="h-16 flex items-center justify-between">
           {/* Logo Section */}
           <div className="flex items-center">
-            <span className="sm:text-3xl text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
-              Salex
-            </span>
+            <Image src="/salex-logo.png" alt="logo" width={85} height={85} />
           </div>
 
           {/* Search Bar */}

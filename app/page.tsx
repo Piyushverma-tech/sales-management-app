@@ -41,7 +41,7 @@ function Navbar() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
-              <span className="text-3xl font-bold text-blue-500">Salex</span>
+              <Image src="/salex-logo.png" alt="logo" width={90} height={90} />
             </Link>
           </div>
 
