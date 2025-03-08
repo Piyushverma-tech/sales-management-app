@@ -59,8 +59,8 @@ export function SalesPersonManager() {
     >
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-center mb-2">
-            Sales Team Management
+          <DialogTitle className="text-2xl font-bold text-center mb-2">
+            Sales Team
           </DialogTitle>
         </DialogHeader>
 

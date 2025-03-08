@@ -55,7 +55,7 @@ export default function StatsCards() {
   ];
 
   return (
-    <div className="grid grid-cols-4 max-sm:grid-cols-1 mt-7 gap-6 p-6">
+    <div className="grid grid-cols-4 max-sm:grid-cols-1 mt-4 gap-6 p-4">
       {stats.map((stat, index) => (
         <SingleStatCard key={index} SingleCard={stat} />
       ))}

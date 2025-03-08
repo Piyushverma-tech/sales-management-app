@@ -79,7 +79,7 @@ export const useSalesPersonStore = create<SalesPersonState>((set) => ({
         style: {
           fontSize: '14px',
           backgroundColor: '#f0fdf4',
-          color: '#ff0000',
+          color: '#15803d',
           border: '1px solid #bbf7d0',
           borderRadius: '8px',
           padding: '12px 16px',

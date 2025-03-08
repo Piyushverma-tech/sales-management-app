@@ -4,10 +4,10 @@ import { Card } from '@/components/ui/card';
 import { useState } from 'react';
 import DeleteDialog from './Components/DeleteDialog';
 import Topbar from './Components/Topbar';
-import StatsCards from './Components/StatsCard';
 import TableArea from './Components/TableArea/TableArea';
 import SalesDialog from './Components/DealDialog/DealDialog';
 import { SalesPersonManager } from './SalesPersonManager/SalesPersonManager';
+import SalesTrendsChart from './Components/SalesTrendChart/SalesTrendsChart';
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -18,7 +18,7 @@ export default function Home() {
       <Card className="sm:m-5 shadow-none">
         <Topbar setSearchQuery={setSearchQuery} searchQuery={searchQuery} />
       </Card>
-      <StatsCards />
+      <SalesTrendsChart />
       <TableArea searchQuery={searchQuery} />
       <SalesPersonManager />
       <SalesDialog />
