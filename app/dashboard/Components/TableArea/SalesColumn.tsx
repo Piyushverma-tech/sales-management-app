@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Column, ColumnDef } from '@tanstack/react-table';
-import { format } from 'date-fns';
+import { format, isValid } from 'date-fns';
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 
 interface SortableHeaderProps {
@@ -92,9 +92,10 @@ export const salesColumns: ColumnDef<SaleType>[] = [
     },
     cell: ({ row }) => {
       const contactDate = row.original.contactDate;
-      const formattedDate = contactDate
-        ? format(new Date(contactDate), 'dd/MM/yyyy')
-        : 'N/A';
+      const parsedDate = new Date(contactDate);
+      const formattedDate = isValid(parsedDate)
+        ? format(parsedDate, 'dd/MM/yyyy')
+        : 'Invalid Date';
 
       return <span>{formattedDate}</span>;
     },

@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server';
 import connect from '@/app/lib/connect';
 import Sale from '@/app/Models/SaleSchema';
 
-// POST: Create a new sale
 export async function POST(req: Request) {
   try {
     await connect();
@@ -30,17 +29,25 @@ export async function POST(req: Request) {
       priority,
     });
 
-    return NextResponse.json(newSale, { status: 201 });
+    const newSaleObj = newSale.toObject({ getters: true });
+    return NextResponse.json(newSaleObj, { status: 201 });
   } catch (error) {
-    console.error('Error creating sale:', error);
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 }
-    );
+    if (error instanceof Error) {
+      console.error('Error creating sale:', error.message, error.stack); // Log full error details
+      return NextResponse.json(
+        { error: error.message || 'Internal Server Error' },
+        { status: 500 }
+      );
+    } else {
+      console.error('Unknown error:', error); // Log unknown error
+      return NextResponse.json(
+        { error: 'Internal Server Error' },
+        { status: 500 }
+      );
+    }
   }
 }
 
-// GET: Fetch all sales for the logged-in user
 export async function GET() {
   try {
     await connect();
@@ -48,10 +55,12 @@ export async function GET() {
     if (!user)
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const sales = await Sale.find({ clerkUserId: user.id }).sort({
+    // Fetch sales from the database
+    const salesDocs = await Sale.find({ clerkUserId: user.id }).sort({
       createdAt: -1,
     });
 
+    const sales = salesDocs.map((doc) => doc.toObject({ getters: true }));
     return NextResponse.json(sales, { status: 200 });
   } catch (error) {
     console.error('Error fetching sales:', error);
@@ -62,7 +71,6 @@ export async function GET() {
   }
 }
 
-// PUT: Update a specific sale
 export async function PUT(req: Request) {
   try {
     await connect();
@@ -88,8 +96,8 @@ export async function PUT(req: Request) {
 
     if (!updatedSale)
       return NextResponse.json({ error: 'Sale not found' }, { status: 404 });
-
-    return NextResponse.json(updatedSale, { status: 200 });
+    const updatedSaleObj = updatedSale.toObject({ getters: true });
+    return NextResponse.json(updatedSaleObj, { status: 200 });
   } catch (error) {
     console.error('Error updating sale:', error);
     return NextResponse.json(
@@ -99,7 +107,6 @@ export async function PUT(req: Request) {
   }
 }
 
-//DELETE: Delete a specific sale
 export async function DELETE(req: Request) {
   try {
     await connect();
