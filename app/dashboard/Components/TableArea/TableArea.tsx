@@ -108,23 +108,23 @@ export default function TableArea({ searchQuery }: { searchQuery: string }) {
         const columnName =
           typeof cell.column.columnDef.header === 'string'
             ? cell.column.columnDef.header
-            : cell.column.id; // Use column ID if header is not a string
+            : cell.column.id;
 
         let value = cell.getValue();
 
-        // 🟢 Ensure value is a valid date before formatting
+        //Ensure value is a valid date before formatting
         if (cell.column.id === 'contactDate' && value) {
           if (typeof value === 'string' || typeof value === 'number') {
             const dateValue = new Date(value);
             if (!isNaN(dateValue.getTime())) {
-              value = dateValue.toLocaleDateString('en-IN'); // Format as DD/MM/YYYY
+              value = dateValue.toLocaleDateString('en-IN');
             } else {
               value = ''; // If invalid, set empty
             }
           }
         }
 
-        // 🟢 Fix Deal Value Encoding (Replace ₹ with Rs.)
+        //Replace ₹ with Rs.
         if (cell.column.id === 'dealValue' && typeof value === 'string') {
           value = value.replace(/₹/g, 'Rs.');
         }
@@ -134,16 +134,16 @@ export default function TableArea({ searchQuery }: { searchQuery: string }) {
       }, {});
     });
 
-    // 🟢 Convert Data to CSV
+    //Convert Data to CSV
     const csv = Papa.unparse(tableData);
 
-    // 🟢 Create Blob with UTF-8 BOM (Fixes encoding issues)
+    //Create Blob with UTF-8 BOM (Fixes encoding issues)
     const blob = new Blob(['\uFEFF' + csv], {
       type: 'text/csv;charset=utf-8;',
     });
     const url = URL.createObjectURL(blob);
 
-    // 🟢 Create and Trigger Download
+    //Create and Trigger Download
     const link = document.createElement('a');
     link.href = url;
     link.setAttribute('download', 'table-data.csv');

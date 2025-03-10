@@ -198,32 +198,29 @@ export default function SalesTrendsChart() {
   );
 
   return (
-    <Card className="shadow-none sm:m-6 poppins px-2 my-6">
+    <Card className="shadow-none sm:m-6 max-sm:border-none  poppins px-2 my-6">
       <StatsCards />
-      <CardHeader className="pb-2">
+      <CardHeader className="pb-1">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div className="flex items-center gap-2">
             <div>
               <CardTitle
                 onClick={() => setIsExpanded(!isExpanded)}
-                className={`text-xl font-semibold mb-6 tracking-normal  ${
-                  isExpanded ? 'text-primary' : 'text-slate-600'
+                className={`font-semibold flex items-center text-xl mb-6 tracking-normal  ${
+                  isExpanded ? 'text-primary ' : 'text-slate-500  '
                 } hover:text-primary cursor-pointer`}
               >
                 Sales Trends
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="p-1 h-8 w-8 ml-2"
-                  onClick={() => setIsExpanded(!isExpanded)}
+                <span
+                  className="ml-1"
                   aria-label={isExpanded ? 'Collapse charts' : 'Expand charts'}
                 >
                   {isExpanded ? (
-                    <ChevronUp className="h-6 w-6" />
+                    <ChevronUp className="size-6 " />
                   ) : (
-                    <ChevronDown className="h-6 w-6" />
+                    <ChevronDown className="size-6" />
                   )}
-                </Button>
+                </span>
               </CardTitle>
 
               {revenueGrowth !== null && isExpanded && (

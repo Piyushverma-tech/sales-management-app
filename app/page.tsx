@@ -170,8 +170,23 @@ function AuthButtons() {
 function Hero() {
   return (
     <div className="relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+      {/* background image with gradient overlay */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/90 to-gray-950/30 z-10"></div>
+        <div className="hidden lg:block">
+          <Image
+            src="/dashboard-preview.png"
+            alt="Salex Dashboard Background"
+            fill
+            style={{ objectFit: 'cover', objectPosition: 'center right' }}
+            className="opacity-80"
+          />
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24 relative z-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
+          {/* Left column - Text content */}
           <div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight">
               Supercharge Your Sales Management
@@ -211,21 +226,24 @@ function Hero() {
               <span className="mt-2 sm:mt-0">14-day free trial</span>
             </div>
           </div>
-          <div className="mt-8 lg:mt-0 rounded-xl overflow-hidden shadow-2xl border border-gray-800 bg-gray-900">
-            <Image
-              width={500}
-              height={500}
-              src="/dashboard-preview.png"
-              alt="Salex Dashboard"
-              className="w-full h-auto"
-            />
+
+          <div className="relative lg:block">
+            <div className="rounded-lg mt-6 overflow-hidden shadow-2xl border border-gray-600 bg-gray-900 transform lg:translate-x-0">
+              <Image
+                width={560}
+                height={400}
+                src="/dashboard-preview2.png"
+                alt="Salex Dashboard"
+                className="w-full h-auto"
+                priority
+              />
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 }
-
 function Features() {
   const features = [
     {
@@ -270,10 +288,10 @@ function Features() {
     <div id="features" className="py-12 sm:py-16 lg:py-20 bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold">
+          <h2 className="text-2xl sm:text-3xl text-gray-300 lg:text-4xl font-bold">
             Powerful Features to Boost Your Sales
           </h2>
-          <p className="mt-4 text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto">
+          <p className="mt-3 text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto">
             Everything you need to manage and grow your sales pipeline
             efficiently.
           </p>
@@ -283,7 +301,7 @@ function Features() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="bg-gray-800 rounded-xl p-6 sm:p-8 hover:bg-gray-750 transition-colors border border-gray-700"
+              className="bg-gray-950 rounded-xl p-6 sm:p-8 hover:bg-gray-750 transition-colors border border-gray-600"
             >
               <div className="mb-4">{feature.icon}</div>
               <h3 className="text-lg sm:text-xl font-semibold mb-2">
@@ -307,32 +325,32 @@ function Testimonials() {
         'Salex transformed how we track our sales pipeline. Our close rate increased by 32% in just two months.',
       author: 'Sarah Johnson',
       title: 'Sales Director, TechCorp',
-      avatar: '/avatar1.png', // Would need actual images
+      avatar: '/person1.png', // Would need actual images
     },
     {
       quote:
         'The analytics and forecasting features helped us predict our quarterly revenue with 95% accuracy.',
       author: 'Michael Chen',
       title: 'CEO, GrowthFinance',
-      avatar: '/avatar2.png',
+      avatar: '/person2.png',
     },
     {
       quote:
         'My team loves the intuitive interface. Onboarding was smooth and adoption was immediate.',
-      author: 'Laura Smith',
+      author: 'Maria Smith',
       title: 'Sales Manager, Innovate Inc',
-      avatar: '/avatar3.png',
+      avatar: '/person3.png',
     },
   ];
 
   return (
-    <div id="testimonials" className="py-12 sm:py-16 lg:py-20">
+    <div id="testimonials" className="py-20 sm:py-16 lg:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10 sm:mb-16">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold">
             What Our Customers Say
           </h2>
-          <p className="mt-4 text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto">
+          <p className="mt-3 text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto">
             Join thousands of sales teams who&apos;ve improved their processes
             with Salex.
           </p>
@@ -348,7 +366,15 @@ function Testimonials() {
                 {testimonial.quote}
               </p>
               <div className="flex items-center">
-                <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-gray-600 mr-4"></div>
+                <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-gray-600 mr-4">
+                  <Image
+                    height={40}
+                    width={40}
+                    src={testimonial.avatar}
+                    alt={testimonial.author}
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                </div>
                 <div>
                   <h4 className="font-medium text-sm sm:text-base">
                     {testimonial.author}
@@ -434,7 +460,7 @@ function Pricing() {
           {plans.map((plan, index) => (
             <div
               key={index}
-              className={`bg-gray-800 rounded-xl p-6 sm:p-8 border ${
+              className={`bg-gray-950 rounded-xl p-6 sm:p-8 border ${
                 plan.popular ? 'border-blue-500' : 'border-gray-700'
               } relative`}
             >
@@ -684,14 +710,7 @@ function Footer() {
                   About
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/careers"
-                  className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base"
-                >
-                  Careers
-                </Link>
-              </li>
+
               <li>
                 <Link
                   href="/contact"

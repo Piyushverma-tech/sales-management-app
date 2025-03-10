@@ -86,7 +86,7 @@ export const salesColumns: ColumnDef<SaleType>[] = [
     },
   },
   {
-    accessorKey: 'Contactdate',
+    accessorKey: 'contactDate',
     header: ({ column }) => {
       return <SortableHeader column={column} label="Contact Date" />;
     },
@@ -98,6 +98,12 @@ export const salesColumns: ColumnDef<SaleType>[] = [
         : 'Invalid Date';
 
       return <span>{formattedDate}</span>;
+    },
+    sortDescFirst: true,
+    sortingFn: (rowA, rowB, columnId) => {
+      const dateA = new Date(rowA.getValue(columnId));
+      const dateB = new Date(rowB.getValue(columnId));
+      return dateA.getTime() - dateB.getTime();
     },
   },
   {

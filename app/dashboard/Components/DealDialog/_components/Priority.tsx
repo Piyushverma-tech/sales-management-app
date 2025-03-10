@@ -19,18 +19,18 @@ export function Priority({
 }: selectedPriorityProps) {
   const priority: SaleType['priority'][] = ['Low', 'Medium', 'High'];
 
-  // function renderBoxColor(priority: SaleType['priority']) {
-  //   switch (priority) {
-  //     case 'Low':
-  //       return 'bg-green-400';
-  //     case 'Medium':
-  //       return 'bg-yellow-400';
-  //     case 'High':
-  //       return 'bg-red-400';
-  //     default:
-  //       return 'bg-green-400';
-  //   }
-  // }
+  function renderBoxColor(priority: SaleType['priority']) {
+    switch (priority) {
+      case 'Low':
+        return 'bg-green-400';
+      case 'Medium':
+        return 'bg-yellow-400';
+      case 'High':
+        return 'bg-red-500';
+      default:
+        return 'bg-green-400';
+    }
+  }
 
   return (
     <div className="flex flex-col gap-2 poppins">
@@ -49,7 +49,12 @@ export function Priority({
         <SelectContent className="poppins">
           {priority.map((priority) => (
             <SelectItem key={priority} value={priority}>
-              {priority}
+              <div className="flex items-center gap-2">
+                <div
+                  className={`w-3 h-3 rounded-full ${renderBoxColor(priority)}`}
+                ></div>
+                <span>{priority}</span>
+              </div>
             </SelectItem>
           ))}
         </SelectContent>

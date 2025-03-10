@@ -95,7 +95,7 @@ export function SalesPersonManager() {
               sortedSalesPersons.map((person) => (
                 <div
                   key={person.name}
-                  className="flex items-center justify-between border border-gray-400 hover:bg-gray-200/10 transition-colors py-1 px-4 rounded-md"
+                  className="flex items-center justify-between border border-gray-600 hover:bg-gray-200/10 transition-colors py-1 px-4 rounded-md"
                 >
                   <span className="font-medium mr-6">{person.name}</span>
                   <span className="text-gray-500 text-sm mr-auto">

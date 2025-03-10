@@ -13,9 +13,9 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
 
   return (
-    <div className="m-5 poppins">
+    <div className=" poppins">
       <DeleteDialog />
-      <Card className="sm:m-5 shadow-none">
+      <Card className="sm:m-5 max-sm:rounded-none shadow-none">
         <Topbar setSearchQuery={setSearchQuery} searchQuery={searchQuery} />
       </Card>
       <SalesTrendsChart />

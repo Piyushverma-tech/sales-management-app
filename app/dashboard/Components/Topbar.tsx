@@ -27,9 +27,9 @@ const Topbar = ({
   return (
     <div className="w-full ">
       <div className="container mx-auto sm:px-8 px-4">
-        <div className="h-16 flex items-center justify-between">
+        <div className="h-14 flex items-center justify-between">
           {/* Logo Section */}
-          <div className="flex items-center">
+          <div className="flex items-center ">
             <Image src="/salex-logo.png" alt="logo" width={85} height={85} />
           </div>
 
