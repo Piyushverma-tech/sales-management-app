@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Salex - Sales Management App
 
-## Getting Started
+Salex helps you track deals, analyze performance, and close more sales with an intuitive dashboard and powerful analytics. It also provides sales team management with full encryption of user and sales data, ensuring security and privacy.
 
-First, run the development server:
+## 🚀 Features
+- **Sales Tracking:** Manage and monitor deals efficiently.
+- **Performance Analysis:** Gain insights with powerful analytics and trend visualization.
+- **Sales Management:** Securely manage sales with encrypted data storage.
+- **Intuitive Dashboard:** Easy-to-use interface for quick navigation and insights.
+- **Priority-based Sales Handling:** Organize sales based on priority and status.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🛠️ Technologies Used
+- **Next.js** - Framework for building the web app.
+- **TanStack Table** - Managing and displaying sales data efficiently.
+- **ShadCN UI** - UI components for a seamless user experience.
+- **Recharts** - Data visualization for sales trends.
+- **MongoDB & Mongoose** - Database and ORM for managing sales data.
+- **Zustand** - State management for a smooth and scalable experience.
+- **TailwindCSS** - Styling framework for a modern and responsive UI.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📦 Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Piyushverma-tech/sales-management-app.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd sales-management-app
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+4. Set up environment variables in a `.env` file:
+   ```
+   MONGODB_URI=your_mongodb_connection_string
+   NEXT_PUBLIC_CLERK_FRONTEND_API=your_clerk_frontend_api
+   CLERK_API_KEY=your_clerk_api_key
+   ```
+5. Run the development server:
+   ```bash
+   npm run dev
+   ```
+6. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📊 Future Enhancements
+- AI-powered sales predictions.
+- Automated lead scoring.
+- Integration with third-party CRM tools.
+- More advanced filtering and reporting features.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🤝 Contributing
+Feel free to contribute! Fork the repo, create a branch, make your changes, and open a pull request.
 
-## Learn More
+## 📄 License
+This project is licensed under the MIT License.
 
-To learn more about Next.js, take a look at the following resources:
+---
+### ⭐ Show your support
+If you like **Salex**, don't forget to **star** this repository on GitHub! ⭐
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
