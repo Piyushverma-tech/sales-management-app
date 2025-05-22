@@ -206,7 +206,7 @@ export default function SalesTrendsChart() {
             <div>
               <CardTitle
                 onClick={() => setIsExpanded(!isExpanded)}
-                className={`font-semibold flex items-center text-xl mb-6 tracking-normal  ${
+                className={`font-semibold flex items-center text-lg mb-6 tracking-normal  ${
                   isExpanded ? 'text-primary ' : 'text-slate-500  '
                 } hover:text-primary cursor-pointer`}
               >

@@ -3,6 +3,8 @@ import { headers } from 'next/headers';
 import { WebhookEvent } from '@clerk/nextjs/server';
 
 import User from '@/app/Models/UserSchema';
+import Organization from '@/app/Models/OrganizationSchema';
+import SalesPerson from '@/app/Models/SalesPersonSchema';
 import connect from '@/app/lib/connect';
 
 export async function POST(req: Request) {
@@ -55,6 +57,8 @@ export async function POST(req: Request) {
   const { id } = evt.data;
   const eventType = evt.type;
 
+  await connect();
+
   if (eventType === 'user.created') {
     const { id, email_addresses } = evt.data;
 
@@ -62,14 +66,71 @@ export async function POST(req: Request) {
       clerkUserId: id,
       emailAddress: email_addresses[0].email_address,
     };
-    await connect();
+    
     try {
       await User.create(newUser);
-      console.log('user created');
+      console.log('User created');
     } catch (error) {
       console.error('Error while creating user:', error);
     }
   }
+
+  // Handle organization events
+  if (eventType === 'organization.created') {
+    const { id, name, created_by } = evt.data;
+    
+    try {
+      await Organization.create({
+        clerkOrganizationId: id,
+        name,
+        createdByUserId: created_by,
+      });
+      console.log('Organization created');
+    } catch (error) {
+      console.error('Error while creating organization:', error);
+    }
+  }
+
+  // Handle organization member events
+  if (eventType === 'organizationMembership.created') {
+    const { organization, public_user_data } = evt.data;
+    
+    try {
+      const existingSalesPerson = await SalesPerson.findOne({
+        clerkUserId: public_user_data.user_id,
+        organizationId: organization.id
+      });
+      
+      if (!existingSalesPerson) {
+        await SalesPerson.create({
+          clerkUserId: public_user_data.user_id,
+          organizationId: organization.id,
+          name: public_user_data.first_name 
+            ? `${public_user_data.first_name} ${public_user_data.last_name || ''}`
+            : public_user_data.identifier
+        });
+        console.log('Sales person created from organization membership');
+      }
+    } catch (error) {
+      console.error('Error while creating sales person from membership:', error);
+    }
+  }
+
+  // Handle member removal
+  if (eventType === 'organizationMembership.deleted') {
+    const { organization, public_user_data } = evt.data;
+    
+    try {
+      await SalesPerson.findOneAndDelete({
+        clerkUserId: public_user_data.user_id,
+        organizationId: organization.id
+      });
+      console.log('Sales person removed due to organization membership deletion');
+    } catch (error) {
+      console.error('Error while removing sales person:', error);
+    }
+  }
+
   console.log(`Received webhook with ID ${id} and event type of ${eventType}`);
   console.log('Webhook payload:', body);
 

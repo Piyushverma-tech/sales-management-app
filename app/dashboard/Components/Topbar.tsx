@@ -30,7 +30,14 @@ const Topbar = ({
         <div className="h-14 flex items-center justify-between">
           {/* Logo Section */}
           <div className="flex items-center ">
-            <Image src="/salex-logo.png" alt="logo" width={85} height={85} />
+            <Image 
+              src="/salex-logo.png" 
+              alt="logo" 
+              width={60} 
+              height={25}
+              priority 
+              style={{ height: 'auto', width: 'auto' }}
+            />
           </div>
 
           {/* Search Bar */}

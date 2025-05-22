@@ -11,6 +11,7 @@ export type SalePriority = 'Low' | 'Medium' | 'High';
 const SaleSchema = new mongoose.Schema(
   {
     clerkUserId: { type: String, required: true }, // Clerk User ID to associate sales with a user
+    organizationId: { type: String, required: false }, // Making it optional for backward compatibility
     customerName: {
       type: String,
       required: true,

@@ -1,67 +1,91 @@
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { useSalesPersonStore } from '@/app/useSalesPersonStore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { UserPlus } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import { useSalesStore } from '@/app/useSalesStore';
+import { useUser, useOrganization } from '@clerk/nextjs';
 
 type selectedSalespersonProps = {
   selectedSalesperson: string;
   setSelectedSalesperson: React.Dispatch<React.SetStateAction<string>>;
 };
+
 export function SalesPerson({
-  selectedSalesperson,
   setSelectedSalesperson,
 }: selectedSalespersonProps) {
-  const { salesPersons, loadSalesPersons } = useSalesPersonStore();
-  const { setOpenSalesPersonDialog } = useSalesStore();
+  const { salesPersons, loadSalesPersons, syncOrganizationMembers } =
+    useSalesPersonStore();
+  const { openSalesPersonDialog } = useSalesStore();
+  const { organization } = useOrganization();
+  const { user, isLoaded: isUserLoaded } = useUser();
+  const [syncing, setSyncing] = useState(false);
 
+  // Load sales persons on initial mount and when organization changes
   useEffect(() => {
     loadSalesPersons();
-  }, []);
+  }, [organization?.id]);
+
+  // Refresh when dialog closes (in case new sales persons were added)
+  useEffect(() => {
+    if (!openSalesPersonDialog) {
+      loadSalesPersons();
+    }
+  }, [openSalesPersonDialog]);
+
+  // Set current user name as the salesperson when loaded
+  useEffect(() => {
+    if (isUserLoaded && user) {
+      // Format name the same way as in organization members
+      const userName = user.firstName
+        ? `${user.firstName} ${user.lastName || ''}`.trim()
+        : user.primaryEmailAddress?.emailAddress || user.id;
+
+      setSelectedSalesperson(userName);
+    }
+  }, [isUserLoaded, user, setSelectedSalesperson]);
+
+  const handleSync = async () => {
+    setSyncing(true);
+    try {
+      await syncOrganizationMembers();
+      await loadSalesPersons();
+    } finally {
+      setSyncing(false);
+    }
+  };
+
+  // Get current user's name to display
+  const currentUserName =
+    isUserLoaded && user
+      ? user.firstName
+        ? `${user.firstName} ${user.lastName || ''}`.trim()
+        : user.primaryEmailAddress?.emailAddress || user.id
+      : 'Loading...';
 
   return (
     <div className="flex flex-col gap-2 poppins">
-      <Label className="text-slate-600">{'Sales Person'}</Label>
+      <div className="flex justify-between items-center">
+        <Label className="text-slate-600">{'Sales Person'}</Label>
 
-      <Select
-        value={selectedSalesperson}
-        onValueChange={(value) => setSelectedSalesperson(value)}
-      >
-        <SelectTrigger className="h-[45px] shadow-none">
-          <SelectValue placeholder="Select a sales person" />
-        </SelectTrigger>
+        {organization && salesPersons.length === 0 && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleSync}
+            disabled={syncing}
+            className="h-6 flex items-center gap-1"
+          >
+            <RefreshCw className={`h-3 w-3 ${syncing ? 'animate-spin' : ''}`} />
+            <span className="text-xs">Sync Team</span>
+          </Button>
+        )}
+      </div>
 
-        <SelectContent className="poppins">
-          {salesPersons.length > 0 ? (
-            salesPersons.map((person) => (
-              <SelectItem key={person} value={person}>
-                {person}
-              </SelectItem>
-            ))
-          ) : (
-            <div className="flex items-center justify-center gap-3">
-              <span className="text-gray-500 text-sm italic">
-                Please add a sales person
-              </span>
-              <Button
-                className="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-blue-400 text-white sm:mr-4"
-                size="sm"
-                onClick={() => setOpenSalesPersonDialog(true)}
-              >
-                <UserPlus className="w-4 h-4" />
-              </Button>
-            </div>
-          )}
-        </SelectContent>
-      </Select>
+      {/* Replaced with disabled input showing only current user */}
+      <div className="h-[45px] flex items-center px-3 border rounded-md">
+        {currentUserName}
+      </div>
     </div>
   );
 }

@@ -14,4 +14,5 @@ export type SaleType = {
   contactDate: string;
   salesperson: string;
   priority: SalePriority;
+  organizationId?: string;
 };

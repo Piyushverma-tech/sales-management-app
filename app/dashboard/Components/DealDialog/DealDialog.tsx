@@ -23,6 +23,7 @@ import { SalePriority, SaleStatus, SaleType } from '@/app/types';
 import { useEffect, useState } from 'react';
 import { useSalesStore } from '@/app/useSalesStore';
 import { useSalesPersonStore } from '@/app/useSalesPersonStore';
+import { useOrganization } from '@clerk/nextjs';
 
 const dialogSchema = z.object({
   contactDate: z
@@ -57,6 +58,7 @@ export default function SalesDialog() {
     useState<SaleStatus>('In Progress');
 
   const { salesPersons } = useSalesPersonStore();
+  const { organization } = useOrganization();
 
   const [selectedSalesperson, setSelectedSalesperson] = useState(
     salesPersons[0]
@@ -80,6 +82,11 @@ export default function SalesDialog() {
     isLoading,
   } = useSalesStore();
 
+  // Log organization context for debugging
+  useEffect(() => {
+    // Removed console.log
+  }, [organization]);
+
   const onSubmit = async (data: FormData) => {
     const formattedSaleValue = data.saleValue.toLocaleString('en-IN', {
       style: 'currency',
@@ -96,6 +103,7 @@ export default function SalesDialog() {
         contactDate: data.contactDate.toDateString(),
       };
 
+      // organizationId will be set on the server based on the current organization context
       await addSale(newSale);
     } else {
       //edit sale logic
@@ -110,6 +118,7 @@ export default function SalesDialog() {
         salesperson: selectedSalesperson,
       };
 
+      // organizationId will be preserved from the existing sale record
       await updateSale(saleToUpdate);
     }
     handleDialogClose();

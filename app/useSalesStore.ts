@@ -9,6 +9,7 @@ interface SalesAppState {
   setSelectedSale: (sale: SaleType | null) => void;
   isLoading: boolean;
   openDealDialog: boolean;
+  noOrganization: boolean;
   setOpenDealDialog: (open: boolean) => void;
   openSalesPersonDialog: boolean;
   setOpenSalesPersonDialog: (open: boolean) => void;
@@ -26,6 +27,7 @@ export const useSalesStore = create<SalesAppState>((set) => ({
   selectedSale: null,
   openDealDialog: false,
   openSalesPersonDialog: false,
+  noOrganization: false,
 
   // Setter for opening/closing the deal dialog
   setOpenDealDialog: (open) => {
@@ -38,7 +40,6 @@ export const useSalesStore = create<SalesAppState>((set) => ({
   },
 
   // Setter for opening/closing the sales person dialog
-
   setOpenSalesPersonDialog: (open) => {
     set({ openSalesPersonDialog: open });
   },
@@ -50,14 +51,22 @@ export const useSalesStore = create<SalesAppState>((set) => ({
 
   // Fetch all sales from the API
   loadAllSales: async () => {
-    set({ isLoading: true });
+    set({ isLoading: true, noOrganization: false });
     try {
       const response = await fetch('/api/sales-data');
+      
+      if (response.status === 400) {
+        // No organization selected
+        set({ noOrganization: true, allSales: [] });
+        return;
+      }
+      
       if (!response.ok) {
         throw new Error('Failed to fetch sales');
       }
+      
       const data = await response.json();
-      set({ allSales: data });
+      set({ allSales: data, noOrganization: false });
     } catch (error) {
       toast.error('Failed to fetch sales');
       console.log(error);
@@ -77,6 +86,11 @@ export const useSalesStore = create<SalesAppState>((set) => ({
         },
         body: JSON.stringify(newSale),
       });
+
+      if (response.status === 400) {
+        toast.error('Please select an organization first');
+        return { success: false };
+      }
 
       if (!response.ok) {
         throw new Error('Failed to add sale');
@@ -124,8 +138,21 @@ export const useSalesStore = create<SalesAppState>((set) => ({
         body: JSON.stringify(updatedSale),
       });
 
+      if (response.status === 400) {
+        toast.error('Please select an organization first');
+        return { success: false };
+      }
+
+      if (response.status === 403) {
+        toast.error('Permission denied', {
+          description: 'You can only edit your own sales',
+        });
+        return { success: false };
+      }
+
       if (!response.ok) {
-        throw new Error('Failed to update sale');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update sale');
       }
 
       const updatedData = await response.json();
@@ -174,8 +201,21 @@ export const useSalesStore = create<SalesAppState>((set) => ({
         body: JSON.stringify({ _id: saleId }),
       });
 
+      if (response.status === 400) {
+        toast.error('Please select an organization first');
+        return { success: false };
+      }
+
+      if (response.status === 403) {
+        toast.error('Permission denied', {
+          description: 'You can only delete your own sales',
+        });
+        return { success: false };
+      }
+
       if (!response.ok) {
-        throw new Error('Failed to delete sale');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete sale');
       }
 
       set((state) => ({

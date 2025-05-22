@@ -35,7 +35,7 @@ export interface PaginationType {
 }
 
 export default function TableArea({ searchQuery }: { searchQuery: string }) {
-  const { allSales, loadAllSales } = useSalesStore();
+  const { allSales, loadAllSales, isLoading, noOrganization, setOpenDealDialog } = useSalesStore();
   const tabItems = [
     { value: 'All', label: 'All Deals', count: allSales.length },
     {
@@ -63,15 +63,12 @@ export default function TableArea({ searchQuery }: { searchQuery: string }) {
     pageSize: 8,
   });
 
-  const { isLoading, setOpenDealDialog } = useSalesStore();
-
   useEffect(() => {
     loadAllSales();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   //filter data based on the active tab
-
   const filteredData = useMemo(() => {
     if (activeTab === 'All') {
       return allSales;
@@ -150,6 +147,60 @@ export default function TableArea({ searchQuery }: { searchQuery: string }) {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  }
+
+  // No organization selected message
+  if (noOrganization) {
+    return (
+      <Card className="sm:m-6 shadow-none overflow-hidden">
+        <div className="p-8 flex flex-col items-center justify-center min-h-[300px]">
+          <h3 className="text-xl font-medium text-gray-800 mb-2">No Organization Selected</h3>
+          <p className="text-gray-500 mb-6 text-center">
+            Please select an organization using the organization switcher to view and manage sales data.
+          </p>
+          <Button
+            onClick={() => setOpenDealDialog(true)}
+            className="flex bg-gradient-to-r from-blue-600 to-blue-400 text-white items-center gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            <span>Add Sale</span>
+          </Button>
+        </div>
+      </Card>
+    );
+  }
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <Card className="sm:m-6 shadow-none overflow-hidden">
+        <div className="p-8 flex flex-col items-center justify-center min-h-[300px]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mb-4"></div>
+          <p className="text-gray-500">Loading sales data...</p>
+        </div>
+      </Card>
+    );
+  }
+
+  // No sales data yet
+  if (allSales.length === 0) {
+    return (
+      <Card className="sm:m-6 shadow-none overflow-hidden">
+        <div className="p-8 flex flex-col items-center justify-center min-h-[300px]">
+          <h3 className="text-xl font-medium text-gray-800 mb-2">No Sales Data</h3>
+          <p className="text-gray-500 mb-6">
+            Start by adding your first sale to this organization.
+          </p>
+          <Button
+            onClick={() => setOpenDealDialog(true)}
+            className="flex bg-gradient-to-r from-blue-600 to-blue-400 text-white items-center gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            <span>Add Sale</span>
+          </Button>
+        </div>
+      </Card>
+    );
   }
 
   return (

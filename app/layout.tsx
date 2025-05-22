@@ -4,6 +4,7 @@ import './globals.css';
 import { ThemeProvider } from './theme-provider';
 import { Toaster } from 'sonner';
 import { ClerkProvider } from '@clerk/nextjs';
+import { dark } from '@clerk/themes';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -27,7 +28,7 @@ export default function RootLayout({
         className={`${poppins.variable}  antialiased`}
         suppressHydrationWarning
       >
-        <ClerkProvider>
+        <ClerkProvider appearance={{ baseTheme: dark }}>
           <Toaster richColors />
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             {children}{' '}

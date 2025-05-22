@@ -79,7 +79,7 @@ export const salesColumns: ColumnDef<SaleType>[] = [
     },
     cell: ({ row }) => {
       return (
-        <Badge className="rounded-xl bg-primary/15 text-primary font-normal select-none shadow-none">
+        <Badge className="rounded-xl bg-primary/15 text-primary hover:text-white font-normal select-none shadow-none">
           {row.original.status}
         </Badge>
       );
