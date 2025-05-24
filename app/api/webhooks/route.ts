@@ -7,6 +7,9 @@ import Organization from '@/app/Models/OrganizationSchema';
 import SalesPerson from '@/app/Models/SalesPersonSchema';
 import connect from '@/app/lib/connect';
 
+// Ensure this runs as a dynamic server function and is not cached
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: Request) {
   const SIGNING_SECRET = process.env.SIGNING_SECRET;
 
@@ -121,18 +124,59 @@ export async function POST(req: Request) {
     const { organization, public_user_data } = evt.data;
     
     try {
-      await SalesPerson.findOneAndDelete({
+      console.log('Processing organization membership deletion:', {
+        userId: public_user_data?.user_id,
+        orgId: organization?.id,
+        identifier: public_user_data?.identifier
+      });
+      
+      // Validate required data
+      if (!public_user_data?.user_id || !organization?.id) {
+        console.error('Missing required data for membership deletion:', evt.data);
+        return new Response('Error: Missing required data for membership deletion', { 
+          status: 400 
+        });
+      }
+      
+      // First check if the sales person exists
+      const existingSalesPerson = await SalesPerson.findOne({
         clerkUserId: public_user_data.user_id,
         organizationId: organization.id
       });
-      console.log('Sales person removed due to organization membership deletion');
+      
+      if (!existingSalesPerson) {
+        console.log('Sales person not found for deletion. Possibly already deleted.', {
+          userId: public_user_data.user_id,
+          orgId: organization.id
+        });
+      } else {
+        // Delete the sales person
+        const result = await SalesPerson.findOneAndDelete({
+          clerkUserId: public_user_data.user_id,
+          organizationId: organization.id
+        });
+        
+        if (result) {
+          console.log('Sales person successfully removed:', {
+            id: result._id,
+            name: result.name,
+            userId: result.clerkUserId,
+            orgId: result.organizationId
+          });
+        } else {
+          console.error('Failed to remove sales person. Delete operation returned null.');
+        }
+      }
     } catch (error) {
       console.error('Error while removing sales person:', error);
+      // Continue processing to return 200 status - we don't want Clerk to retry
+      // as this could be a temporary database issue
     }
   }
 
-  console.log(`Received webhook with ID ${id} and event type of ${eventType}`);
-  console.log('Webhook payload:', body);
+  console.log(`Webhook processed successfully. ID: ${id}, Type: ${eventType}`);
+  // Only log a short excerpt of the body to avoid cluttering logs
+  console.log('Webhook payload excerpt:', body.substring(0, 200) + (body.length > 200 ? '...' : ''));
 
   return new Response('Webhook received', { status: 200 });
 }

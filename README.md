@@ -1,6 +1,6 @@
 #SaleX - Sales Management Application
 
-A modern, full-stack web application for managing sales data, teams, and organizations. Built with Next.js, MongoDB, and Clerk authentication.
+A modern, full-stack SaaS web application for managing sales data, teams, and organizations. Built with Next.js, MongoDB, and Clerk authentication.
 
 ## Features
 
@@ -11,6 +11,39 @@ A modern, full-stack web application for managing sales data, teams, and organiz
 - **Dashboard**: Visualize sales data with charts and analytics
 - **Role-based Access Control**: Different permissions for organization admins and members
 - **Responsive Design**: Modern UI that works on all devices
+- **SaaS Subscription Plans**: Multiple pricing tiers with feature limitations
+- **Integrated Payment Processing**: Seamlessly handle payments via Razorpay
+
+## Subscription Plans
+
+SaleX offers three flexible subscription plans to meet the needs of different team sizes:
+
+1. **Starter Plan** - ₹499/month
+
+   - Up to 5 team members
+   - 1,000 deals
+   - Basic analytics
+   - Email support
+   - CSV exports
+
+2. **Professional Plan** - ₹999/month
+
+   - Up to 15 team members
+   - 10,000 deals
+   - Advanced analytics with trends
+   - Priority support
+   - API access
+   - Custom dashboard
+
+3. **Enterprise Plan** - Custom pricing
+   - Unlimited team members
+   - Unlimited deals
+   - Custom reporting
+   - Dedicated account manager
+   - SSO integration
+   - Data retention policy
+
+All plans include a 14-day free trial with full access to Professional plan features.
 
 ## Tech Stack
 
@@ -28,6 +61,7 @@ A modern, full-stack web application for managing sales data, teams, and organiz
   - Next.js API Routes
   - MongoDB with Mongoose
   - Clerk Authentication
+  - Razorpay Payment Gateway
 
 - **Key Libraries**:
   - @clerk/nextjs: User authentication and organization management
@@ -36,6 +70,7 @@ A modern, full-stack web application for managing sales data, teams, and organiz
   - zod: Schema validation
   - date-fns: Date manipulation
   - mongoose: MongoDB ODM
+  - razorpay: Payment processing
 
 ## Project Structure
 
@@ -43,9 +78,15 @@ A modern, full-stack web application for managing sales data, teams, and organiz
 sales-management-app/
 ├── app/                  # Next.js App Router
 │   ├── api/              # API routes
+│   │   ├── sales-data/   # Sales CRUD operations
+│   │   ├── sales-persons/# Team member management
+│   │   └── subscriptions/# Subscription management
 │   ├── Models/           # Mongoose schemas
 │   ├── dashboard/        # Dashboard pages
+│   │   └── billing/      # Subscription management UI
 │   └── lib/              # Shared utilities
+│       ├── razorpay.ts   # Payment gateway integration
+│       └── subscription-constants.ts # Plan definitions
 ├── components/           # UI components
 ├── public/               # Static assets
 └── scripts/              # Utility scripts
@@ -58,6 +99,7 @@ sales-management-app/
 - Node.js 18+ and npm
 - MongoDB database
 - Clerk account (for authentication)
+- Razorpay account (for payment processing)
 
 ### Environment Setup
 
@@ -77,6 +119,10 @@ SIGNING_SECRET=your_clerk_webhook_signing_secret
 # Data Encryption (use strong unique values)
 ENCRYPTION_KEY=your_encryption_key
 ENCRYPTION_IV=your_encryption_iv
+
+# Razorpay (for payment processing)
+RAZORPAY_TEST_KEY=your_razorpay_key_id
+RAZORPAY_TEST_KEY_SECRET=your_razorpay_key_secret
 ```
 
 ### Installation
@@ -148,6 +194,13 @@ The application includes robust organization management features:
 
 - User information synchronized with Clerk
 - Organization associations
+
+### Subscription
+
+- Plan information (Starter, Professional, Enterprise, Trial)
+- Status tracking (active, trialing, past_due, etc.)
+- Usage metrics
+- Payment history
 
 ## Deployment
 

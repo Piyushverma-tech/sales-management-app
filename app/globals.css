@@ -122,3 +122,10 @@ body {
 ::-webkit-scrollbar-track {
   background-color: #fff;
 }
+
+/* Add your custom styles below */
+
+/* Ensure Recharts bar elements maintain their colors on hover */
+.recharts-bar-rectangle:hover {
+  fill-opacity: 0.9 !important;
+}

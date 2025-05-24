@@ -393,11 +393,14 @@ function Testimonials() {
 }
 
 function Pricing() {
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+  
   const plans = [
     {
       name: 'Starter',
-      price: '$29',
-      period: 'per month',
+      price: billingCycle === 'monthly' ? '₹499' : '₹4,990',
+      period: billingCycle === 'monthly' ? 'per month' : 'per year',
+      discount: billingCycle === 'yearly' ? 'Save ₹998' : null,
       description: 'Perfect for small sales teams getting started',
       features: [
         'Up to 5 team members',
@@ -407,28 +410,31 @@ function Pricing() {
         'CSV exports',
       ],
       cta: 'Start Free Trial',
+      planId: 'starter',
       popular: false,
     },
     {
       name: 'Professional',
-      price: '$79',
-      period: 'per month',
+      price: billingCycle === 'monthly' ? '₹999' : '₹9,990',
+      period: billingCycle === 'monthly' ? 'per month' : 'per year',
+      discount: billingCycle === 'yearly' ? 'Save ₹1,998' : null,
       description: 'For growing teams with advanced needs',
       features: [
         'Up to 15 team members',
         '10,000 deals',
-        'Advanced analytics',
+        'Advanced analytics with trends',
         'Priority support',
         'API access',
         'Custom dashboard',
       ],
       cta: 'Start Free Trial',
+      planId: 'professional',
       popular: true,
     },
     {
       name: 'Enterprise',
-      price: '$199',
-      period: 'per month',
+      price: 'Custom',
+      period: '',
       description: 'For large organizations with complex requirements',
       features: [
         'Unlimited team members',
@@ -439,6 +445,7 @@ function Pricing() {
         'Data retention policy',
       ],
       cta: 'Contact Sales',
+      planId: 'enterprise',
       popular: false,
     },
   ];
@@ -454,6 +461,30 @@ function Pricing() {
             Choose the plan that works best for your team. All plans include a
             14-day free trial.
           </p>
+          
+          {/* Billing toggle */}
+          <div className="mt-6 inline-flex items-center bg-gray-800 p-1 rounded-lg">
+            <button
+              onClick={() => setBillingCycle('monthly')}
+              className={`px-4 py-2 text-sm rounded-md ${
+                billingCycle === 'monthly'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-300 hover:text-white'
+              }`}
+            >
+              Monthly
+            </button>
+            <button
+              onClick={() => setBillingCycle('yearly')}
+              className={`px-4 py-2 text-sm rounded-md ${
+                billingCycle === 'yearly'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-300 hover:text-white'
+              }`}
+            >
+              Yearly <span className="text-blue-400 ml-1">Save 16%</span>
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
@@ -478,6 +509,11 @@ function Pricing() {
                   {plan.period}
                 </span>
               </div>
+              {plan.discount && (
+                <div className="mt-1 inline-block bg-blue-900/30 text-blue-300 text-xs px-2 py-1 rounded">
+                  {plan.discount}
+                </div>
+              )}
               <p className="mt-4 text-gray-400 text-sm sm:text-base">
                 {plan.description}
               </p>
@@ -502,15 +538,17 @@ function Pricing() {
                 ))}
               </ul>
               <div className="mt-6 sm:mt-8">
-                <button
-                  className={`w-full py-2 sm:py-3 px-4 rounded-lg font-medium transition-colors text-sm sm:text-base ${
-                    plan.popular
-                      ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                      : 'border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white'
-                  }`}
-                >
-                  {plan.cta}
-                </button>
+                <Link href={plan.planId === 'enterprise' ? '/contact' : '/sign-up'}>
+                  <button
+                    className={`w-full py-2 sm:py-3 px-4 rounded-lg font-medium transition-colors text-sm sm:text-base ${
+                      plan.popular
+                        ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                        : 'border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white'
+                    }`}
+                  >
+                    {plan.cta}
+                  </button>
+                </Link>
               </div>
             </div>
           ))}

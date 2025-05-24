@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
 import { useSalesStore } from '@/app/useSalesStore';
 import { useUser, useOrganization } from '@clerk/nextjs';
+import { toast } from 'sonner';
 
 type selectedSalespersonProps = {
   selectedSalesperson: string;
@@ -14,8 +15,7 @@ type selectedSalespersonProps = {
 export function SalesPerson({
   setSelectedSalesperson,
 }: selectedSalespersonProps) {
-  const { salesPersons, loadSalesPersons, syncOrganizationMembers } =
-    useSalesPersonStore();
+  const { salesPersons, loadSalesPersons } = useSalesPersonStore();
   const { openSalesPersonDialog } = useSalesStore();
   const { organization } = useOrganization();
   const { user, isLoaded: isUserLoaded } = useUser();
@@ -46,10 +46,23 @@ export function SalesPerson({
   }, [isUserLoaded, user, setSelectedSalesperson]);
 
   const handleSync = async () => {
+    if (!organization) return;
+    
     setSyncing(true);
     try {
-      await syncOrganizationMembers();
+      // Call the new API endpoint to sync salespeople
+      const response = await fetch('/api/salespeople/sync');
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to synchronize team members');
+      }
+      
+      toast.success('Team synchronized successfully');
       await loadSalesPersons();
+    } catch (error) {
+      console.error('Error synchronizing team:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to synchronize team');
     } finally {
       setSyncing(false);
     }

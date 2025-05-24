@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import {
   LineChart,
   Line,
@@ -14,8 +14,6 @@ import {
 } from 'recharts';
 import { useSalesStore } from '@/app/useSalesStore';
 import { Button } from '@/components/ui/button';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import StatsCards from '../StatsCard';
 import { SaleType } from '@/app/types';
 
 interface SalesPeriodData {
@@ -30,7 +28,6 @@ export default function SalesTrendsChart() {
   const [timeRange, setTimeRange] = useState<
     'weekly' | 'monthly' | 'quarterly'
   >('monthly');
-  const [isExpanded, setIsExpanded] = useState(false);
   const { setOpenDealDialog } = useSalesStore();
 
   const hasData = allSales.length > 0;
@@ -198,32 +195,12 @@ export default function SalesTrendsChart() {
   );
 
   return (
-    <Card className="shadow-none sm:m-6 max-sm:border-none  poppins px-2 my-6">
-      <StatsCards />
+    <Card className="shadow-none sm:m-6 border-none poppins px-2 my-6">
       <CardHeader className="pb-1">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div className="flex items-center gap-2">
             <div>
-              <CardTitle
-                onClick={() => setIsExpanded(!isExpanded)}
-                className={`font-semibold flex items-center text-lg mb-6 tracking-normal  ${
-                  isExpanded ? 'text-primary ' : 'text-slate-500  '
-                } hover:text-primary cursor-pointer`}
-              >
-                Sales Trends
-                <span
-                  className="ml-1"
-                  aria-label={isExpanded ? 'Collapse charts' : 'Expand charts'}
-                >
-                  {isExpanded ? (
-                    <ChevronUp className="size-6 " />
-                  ) : (
-                    <ChevronDown className="size-6" />
-                  )}
-                </span>
-              </CardTitle>
-
-              {revenueGrowth !== null && isExpanded && (
+              {revenueGrowth !== null && (
                 <div className="flex items-center gap-2">
                   <span
                     className={`text-sm ${
@@ -241,7 +218,7 @@ export default function SalesTrendsChart() {
               )}
             </div>
           </div>
-          {isExpanded && hasData && (
+          {hasData && (
             <div className="flex space-x-2 p-1 rounded-lg">
               <Button
                 variant="ghost"
@@ -280,139 +257,138 @@ export default function SalesTrendsChart() {
           )}
         </div>
       </CardHeader>
-      {isExpanded && (
-        <CardContent className="pt-6">
-          {!hasData ? (
-            <EmptyState />
-          ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Revenue Trend Chart */}
-              <div className="p-4 rounded-lg">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-medium">Revenue Trend</h3>
-                  {chartData.length > 0 && (
-                    <span className="text-sm text-slate-400">
-                      Last:{' '}
-                      {new Intl.NumberFormat('en-IN', {
-                        style: 'currency',
-                        currency: 'INR',
-                        notation: 'compact',
-                        maximumFractionDigits: 1,
-                      }).format(chartData[chartData.length - 1].totalSales)}
-                    </span>
-                  )}
-                </div>
-                <div className="h-72">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart
-                      data={chartData}
-                      margin={{ top: 5, right: 5, left: 5, bottom: 20 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                      <XAxis
-                        dataKey="period"
-                        tick={{ fill: '#94a3b8' }}
-                        axisLine={{ stroke: '#475569' }}
-                        tickLine={{ stroke: '#475569' }}
-                      />
-                      <YAxis
-                        tickFormatter={(value) =>
-                          new Intl.NumberFormat('en-IN', {
-                            style: 'currency',
-                            currency: 'INR',
-                            notation: 'compact',
-                            maximumFractionDigits: 1,
-                          }).format(Number(value))
-                        }
-                        tick={{ fill: '#94a3b8' }}
-                        axisLine={{ stroke: '#475569' }}
-                        tickLine={{ stroke: '#475569' }}
-                      />
-                      <Tooltip content={<CustomTooltip />} />
-                      <Line
-                        type="monotone"
-                        dataKey="totalSales"
-                        name="Revenue"
-                        stroke="#3b82f6"
-                        strokeWidth={3}
-                        dot={{
-                          r: 4,
-                          fill: '#1e3a8a',
-                          strokeWidth: 2,
-                          stroke: '#3b82f6',
-                        }}
-                        activeDot={{ r: 6, fill: '#60a5fa', strokeWidth: 0 }}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
 
-              {/* Deal Count Chart */}
-              <div className="p-4 rounded-lg">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-medium">Deal Count</h3>
-                  {chartData.length > 0 && (
-                    <div className="flex gap-4">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                        <span className="text-sm text-slate-400">Total</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
-                        <span className="text-sm text-slate-400">Won</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                <div className="h-72">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={chartData}
-                      margin={{ top: 5, right: 5, left: 5, bottom: 20 }}
-                      barGap={8}
-                      barSize={24}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                      <XAxis
-                        dataKey="period"
-                        tick={{ fill: '#94a3b8' }}
-                        axisLine={{ stroke: '#475569' }}
-                        tickLine={{ stroke: '#475569' }}
-                      />
-                      <YAxis
-                        tick={{ fill: '#94a3b8' }}
-                        axisLine={{ stroke: '#475569' }}
-                        tickLine={{ stroke: '#475569' }}
-                      />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: '#1e293b',
-                          borderColor: '#334155',
-                          color: 'white',
-                        }}
-                        cursor={{ fill: 'rgba(255, 255, 255, 0.1)' }}
-                      />
-                      <Bar
-                        dataKey="dealCount"
-                        name="Total Deals"
-                        fill="#60a5fa"
-                        radius={[4, 4, 0, 0]}
-                      />
-                      <Bar
-                        dataKey="wonDeals"
-                        name="Won Deals"
-                        fill="#10b981"
-                        radius={[4, 4, 0, 0]}
-                      />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
+      <CardContent className="pt-6">
+        {!hasData ? (
+          <EmptyState />
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Revenue Trend Chart */}
+            <div className="">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-medium">Revenue Trend</h3>
+                {chartData.length > 0 && (
+                  <span className="text-sm text-slate-400">
+                    Last:{' '}
+                    {new Intl.NumberFormat('en-IN', {
+                      style: 'currency',
+                      currency: 'INR',
+                      notation: 'compact',
+                      maximumFractionDigits: 1,
+                    }).format(chartData[chartData.length - 1].totalSales)}
+                  </span>
+                )}
+              </div>
+              <div className="h-72">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={chartData}
+                    margin={{ top: 5, right: 5, left: 5, bottom: 20 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                    <XAxis
+                      dataKey="period"
+                      tick={{ fill: '#94a3b8' }}
+                      axisLine={{ stroke: '#475569' }}
+                      tickLine={{ stroke: '#475569' }}
+                    />
+                    <YAxis
+                      tickFormatter={(value) =>
+                        new Intl.NumberFormat('en-IN', {
+                          style: 'currency',
+                          currency: 'INR',
+                          notation: 'compact',
+                          maximumFractionDigits: 1,
+                        }).format(Number(value))
+                      }
+                      tick={{ fill: '#94a3b8' }}
+                      axisLine={{ stroke: '#475569' }}
+                      tickLine={{ stroke: '#475569' }}
+                    />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Line
+                      type="monotone"
+                      dataKey="totalSales"
+                      name="Revenue"
+                      stroke="#3b82f6"
+                      strokeWidth={3}
+                      dot={{
+                        r: 4,
+                        fill: '#1e3a8a',
+                        strokeWidth: 2,
+                        stroke: '#3b82f6',
+                      }}
+                      activeDot={{ r: 6, fill: '#60a5fa', strokeWidth: 0 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
               </div>
             </div>
-          )}
-        </CardContent>
-      )}
+
+            {/* Deal Count Chart */}
+            <div className="">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-medium">Deal Count</h3>
+                {chartData.length > 0 && (
+                  <div className="flex gap-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                      <span className="text-sm text-slate-400">Total</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
+                      <span className="text-sm text-slate-400">Won</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="h-72">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={chartData}
+                    margin={{ top: 5, right: 5, left: 5, bottom: 20 }}
+                    barGap={8}
+                    barSize={24}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                    <XAxis
+                      dataKey="period"
+                      tick={{ fill: '#94a3b8' }}
+                      axisLine={{ stroke: '#475569' }}
+                      tickLine={{ stroke: '#475569' }}
+                    />
+                    <YAxis
+                      tick={{ fill: '#94a3b8' }}
+                      axisLine={{ stroke: '#475569' }}
+                      tickLine={{ stroke: '#475569' }}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: '#1e293b',
+                        borderColor: '#334155',
+                        color: 'white',
+                      }}
+                      cursor={{ fill: 'rgba(255, 255, 255, 0.1)' }}
+                    />
+                    <Bar
+                      dataKey="dealCount"
+                      name="Total Deals"
+                      fill="#60a5fa"
+                      radius={[4, 4, 0, 0]}
+                    />
+                    <Bar
+                      dataKey="wonDeals"
+                      name="Won Deals"
+                      fill="#10b981"
+                      radius={[4, 4, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+        )}
+      </CardContent>
     </Card>
   );
 }

@@ -7,9 +7,19 @@ import Topbar from './Components/Topbar';
 import TableArea from './Components/TableArea/TableArea';
 import SalesDialog from './Components/DealDialog/DealDialog';
 import { SalesPersonManager } from './SalesPersonManager/SalesPersonManager';
-import SalesTrendsChart from './Components/SalesTrendChart/SalesTrendsChart';
 import { useOrganization } from '@clerk/nextjs';
 import { useSalesStore } from '@/app/useSalesStore';
+import dynamic from 'next/dynamic';
+
+const SubscriptionBanner = dynamic(
+  () => import('../../app/components/SubscriptionBanner'),
+  { ssr: false }
+);
+
+const DashboardMetrics = dynamic(
+  () => import('./Components/DashboardMetrics'),
+  { ssr: false }
+);
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -18,18 +28,22 @@ export default function Home() {
 
   // Reload sales data when organization changes
   useEffect(() => {
-    if (organization) {
-      loadAllSales();
-    }
+    loadAllSales();
   }, [organization?.id, loadAllSales]);
 
   return (
-    <div className=" poppins">
+    <div className="poppins">
       <DeleteDialog />
       <Card className="sm:m-5 max-sm:rounded-none shadow-none">
         <Topbar setSearchQuery={setSearchQuery} searchQuery={searchQuery} />
       </Card>
-      <SalesTrendsChart />
+
+      {/* Show subscription banner for organizations only */}
+      {organization && <SubscriptionBanner />}
+
+      {/* Show metrics dashboard for both individual and organization users */}
+      <DashboardMetrics />
+
       <TableArea searchQuery={searchQuery} />
       <SalesPersonManager />
       <SalesDialog />
