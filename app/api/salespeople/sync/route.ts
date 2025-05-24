@@ -3,6 +3,14 @@ import { auth, currentUser, clerkClient } from '@clerk/nextjs/server';
 import connect from '@/app/lib/connect';
 import SalesPerson from '@/app/Models/SalesPersonSchema';
 
+// Define interface for SalesPerson document
+interface ISalesPerson {
+  _id: string;
+  clerkUserId: string;
+  organizationId: string;
+  name: string;
+}
+
 export const dynamic = 'force-dynamic';
 
 // GET endpoint to sync salespeople from Clerk to the database
@@ -48,7 +56,7 @@ export async function GET() {
     const existingSalespeopleMap = existingSalespeople.reduce((acc, sp) => {
       acc[sp.clerkUserId] = sp;
       return acc;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, ISalesPerson>);
     
     // Track IDs for added/updated/removed salespeople
     const results = {

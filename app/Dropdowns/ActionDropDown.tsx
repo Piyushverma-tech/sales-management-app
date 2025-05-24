@@ -18,34 +18,41 @@ export default function ActionDropDown({ row }: { row: Row<SaleType> }) {
   const { setOpenDeleteDialog, setSelectedSale, setOpenDealDialog } =
     useSalesStore();
   const { user } = useUser();
-  const { organization, membership } = useOrganization();
+  const { membership } = useOrganization();
 
   // Determine user permissions
   const isOwnSale = user?.id === row.original.clerkUserId;
-  const isOrgOwner = membership?.role === 'org:admin' || 
-                     membership?.role === 'admin';
+  const isOrgOwner =
+    membership?.role === 'org:admin' || membership?.role === 'admin';
   const hasEditDeletePermission = isOwnSale || isOrgOwner;
-  
+
   // Only show available actions based on permissions
   const menuItems = useMemo(() => {
     const allItems = [
-      { icon: <MdContentCopy />, label: 'Copy', className: '', alwaysShow: true },
-      { 
-        icon: <FaRegEdit />, 
-        label: 'Edit', 
-        className: '', 
-        alwaysShow: false 
+      {
+        icon: <MdContentCopy />,
+        label: 'Copy',
+        className: '',
+        alwaysShow: true,
+      },
+      {
+        icon: <FaRegEdit />,
+        label: 'Edit',
+        className: '',
+        alwaysShow: false,
       },
       {
         icon: <MdOutlineDelete className="text-lg" />,
         label: 'Delete',
         className: 'text-red-600',
-        alwaysShow: false
+        alwaysShow: false,
       },
     ];
-    
+
     // Filter items based on permissions
-    return allItems.filter(item => item.alwaysShow || hasEditDeletePermission);
+    return allItems.filter(
+      (item) => item.alwaysShow || hasEditDeletePermission
+    );
   }, [hasEditDeletePermission]);
 
   async function handleClickedItem(item: string) {
