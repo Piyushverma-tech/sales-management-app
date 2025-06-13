@@ -65,6 +65,27 @@ export async function GET() {
         subscription.plan.toUpperCase() as keyof typeof SUBSCRIPTION_PLANS
       ];
 
+    if (subscription.status === 'trialing') {
+      const endDate = new Date(subscription.endDate);
+      const today = new Date();
+
+      if (today > endDate) {
+        // Update the subscription status to inactive
+        subscription.status = 'inactive';
+        await subscription.save();
+
+        return NextResponse.json({
+          plan: subscription.plan,
+          status: 'inactive', // Return the updated status
+          startDate: subscription.startDate,
+          endDate: subscription.endDate,
+          features: planDetails,
+          paymentId: subscription.paymentId,
+          razorpaySubscriptionId: subscription.razorpaySubscriptionId,
+        });
+      }
+    }
+
     return NextResponse.json({
       plan: subscription.plan,
       status: subscription.status,
@@ -172,7 +193,7 @@ export async function POST(req: Request) {
     // Return order details for frontend payment processing
     return NextResponse.json({
       order_id: order.id,
-      amount: Number(order.amount) / 100, // Convert to number before division
+      amount: Number(order.amount) / 100,
       currency: order.currency,
       receipt: order.receipt,
       plan,

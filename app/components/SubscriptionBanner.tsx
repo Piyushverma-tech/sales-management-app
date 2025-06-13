@@ -32,7 +32,9 @@ export default function SubscriptionBanner() {
   useEffect(() => {
     // Check if banner was previously closed
     if (organization?.id) {
-      const isClosed = localStorage.getItem(`subscription-banner-closed-${organization.id}`);
+      const isClosed = localStorage.getItem(
+        `subscription-banner-closed-${organization.id}`
+      );
       if (isClosed === 'true') {
         setIsBannerClosed(true);
       }
@@ -68,17 +70,19 @@ export default function SubscriptionBanner() {
 
   const handleCloseBanner = () => {
     if (organization?.id) {
-      localStorage.setItem(`subscription-banner-closed-${organization.id}`, 'true');
+      localStorage.setItem(
+        `subscription-banner-closed-${organization.id}`,
+        'true'
+      );
       setIsBannerClosed(true);
     }
   };
 
-  // Don't show banner for personal (non-organization) context
+  // Don't show banner for personal (non-organization)
   if (!organization || loading || isBannerClosed) {
     return null;
   }
 
-  // If error, show minimal error banner
   if (error) {
     return (
       <div className="bg-yellow-900/30 border border-yellow-700 text-yellow-200 p-3 mb-4 rounded-lg">
@@ -96,21 +100,34 @@ export default function SubscriptionBanner() {
       : null;
     const today = new Date();
     const daysLeft = endDate
-      ? Math.ceil((endDate.getTime() - today.getTime()) / (1000 * 3600 * 24))
+      ? Math.max(
+          0,
+          Math.ceil((endDate.getTime() - today.getTime()) / (1000 * 3600 * 24))
+        )
       : 0;
+
+    // check for expired trial
+    const isTrialExpired = endDate ? today > endDate : false;
 
     return (
       <div
-        className={`${bgColor} border border-blue-600 text-blue-100 p-4 mb-5 mx-4 rounded-lg`}
+        className={`${
+          isTrialExpired ? 'bg-red-900/30 border-red-600' : bgColor
+        } border text-blue-100 p-4 mb-5 mx-4 rounded-lg`}
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h3 className={`font-medium ${textColor}`}>
-              Trial Period - {daysLeft} {daysLeft === 1 ? 'day' : 'days'} left
+              {isTrialExpired
+                ? 'Trial Period - Expired'
+                : `Trial Period - ${daysLeft} ${
+                    daysLeft === 1 ? 'day' : 'days'
+                  } left`}
             </h3>
             <p className="text-sm mt-1">
-              You&apos;re currently on a free trial of our Professional plan. To
-              avoid service interruption, please choose a plan.
+              {isTrialExpired
+                ? 'Your trial has expired. Please choose a plan to continue using all features.'
+                : "You're currently on a free trial of our Professional plan. To avoid service interruption, please choose a plan."}
             </p>
           </div>
           <Link
@@ -151,7 +168,7 @@ export default function SubscriptionBanner() {
     );
   }
 
-  // Active subscription - just show limits (optional)
+  // Active subscription
   if (subscription.features && subscription.status === 'active') {
     return (
       <div className="bg-gray-800 border border-gray-700 p-3 mb-4 mx-4 rounded-lg relative">
@@ -167,8 +184,8 @@ export default function SubscriptionBanner() {
             <span className="text-blue-400">Advanced Analytics</span>
           )}
         </div>
-        <button 
-          onClick={handleCloseBanner} 
+        <button
+          onClick={handleCloseBanner}
           className="absolute top-3 right-3 text-gray-400 hover:text-gray-100 transition-colors"
           aria-label="Close banner"
         >

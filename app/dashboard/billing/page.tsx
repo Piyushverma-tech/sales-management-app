@@ -332,7 +332,12 @@ export default function BillingPage() {
               {subscription.endDate && (
                 <div className="text-sm text-gray-400">
                   {subscription.status === 'trialing' ? 'Trial ends' : 'Renews'}{' '}
-                  on {new Date(subscription.endDate).toLocaleDateString()}
+                  on{' '}
+                  {new Date(subscription.endDate).toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric',
+                  })}
                 </div>
               )}
             </div>
@@ -394,7 +399,7 @@ export default function BillingPage() {
           <div
             className={`relative bg-gradient-to-br from-gray-800/60 to-gray-700/60 backdrop-blur-sm rounded-2xl p-8 border-2 cursor-pointer transition-all duration-300   group ${
               selectedPlan === 'starter'
-                ? 'border-blue-400 shadow-blue-500/25 shadow-2xl'
+                ? 'border-blue-400'
                 : 'border-gray-600/30 hover:border-gray-500/50'
             }`}
             onClick={() => handlePlanSelect('starter')}
@@ -460,7 +465,7 @@ export default function BillingPage() {
           <div
             className={`relative bg-gradient-to-br from-gray-800/60 to-gray-700/60 backdrop-blur-sm rounded-2xl p-8 border-2 cursor-pointer transition-all duration-300   group ${
               selectedPlan === 'professional'
-                ? 'border-blue-400 shadow-blue-500/25 shadow-2xl'
+                ? 'border-blue-400'
                 : 'border-gray-600/30 hover:border-gray-500/50'
             }`}
             onClick={() => handlePlanSelect('professional')}
@@ -527,7 +532,7 @@ export default function BillingPage() {
           <div
             className={`relative bg-gradient-to-br from-gray-800/60 to-gray-700/60 backdrop-blur-sm rounded-2xl p-8 border-2 cursor-pointer transition-all duration-300   group ${
               selectedPlan === 'enterprise'
-                ? 'border-purple-400 shadow-purple-500/25 shadow-2xl'
+                ? 'border-purple-400'
                 : 'border-gray-600/30 hover:border-gray-500/50'
             }`}
             onClick={() => handlePlanSelect('enterprise')}

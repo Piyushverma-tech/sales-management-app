@@ -19,8 +19,17 @@ export function hasFeature(
   subscription: SubscriptionData | null,
   featureName: 'hasAdvancedAnalytics' | 'api' | 'custom_dashboard'
 ): boolean {
-  // If no subscription data, assume trial
+  // If no subscription data, assume no features
   if (!subscription) return false;
+
+  // Check if trial has expired
+  if (subscription.status === 'trialing' && subscription.endDate) {
+    const endDate = new Date(subscription.endDate);
+    const today = new Date();
+    if (today > endDate) {
+      return false; // Trial expired
+    }
+  }
 
   // If not active or trialing, no features
   if (subscription.status !== 'active' && subscription.status !== 'trialing') {
