@@ -218,7 +218,10 @@ export default function DashboardMetrics() {
           ? daysRemaining <= 0
             ? 'Your trial has expired. Please select a plan to continue.'
             : `Your trial will expire soon. Choose a plan to continue.`
-          : `Renews on ${new Date(subscription.endDate!).toLocaleDateString()}`,
+          : `Renews on ${new Date(subscription.endDate!).toLocaleDateString(
+              'en-IN',
+              { day: '2-digit', month: '2-digit', year: 'numeric' }
+            )}`,
         progress: isTrialing
           ? {
               value: 14 - daysRemaining,
@@ -239,8 +242,10 @@ export default function DashboardMetrics() {
       {
         title: 'Plan',
         value:
-          subscription.plan.charAt(0).toUpperCase() +
-          subscription.plan.slice(1),
+          subscription.status == 'inactive'
+            ? 'inactive'
+            : subscription.plan.charAt(0).toUpperCase() +
+              subscription.plan.slice(1),
         icon: (
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -258,8 +263,8 @@ export default function DashboardMetrics() {
           </svg>
         ),
         helpText:
-          subscription.plan === 'trial'
-            ? 'Choose a plan before your trial ends.'
+          subscription.plan === 'trial' || subscription.status === 'inactive'
+            ? 'You are not on subscription, buy a plan to get more benefits.'
             : `You're on the ${subscription.plan} plan.`,
       },
     ];

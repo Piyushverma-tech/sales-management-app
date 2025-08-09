@@ -93,11 +93,15 @@ export default function BillingPage() {
         }
 
         const data = await response.json();
-        setSubscription(data);
-
-        // Pre-select current plan if active
-        if (data.plan && data.plan !== 'trial') {
-          setSelectedPlan(data.plan);
+        if (data.status == 'inactive') {
+          setSubscription(null);
+          setSelectedPlan('starter');
+        } else {
+          setSubscription(data);
+          // Pre-select current plan if active
+          if (data.plan && data.plan !== 'trial' && data.status === 'active') {
+            setSelectedPlan(data.plan);
+          }
         }
       } catch (err) {
         console.error(err);
@@ -225,6 +229,7 @@ export default function BillingPage() {
             // Refresh subscription data
             const refreshResponse = await fetch('/api/subscriptions');
             const refreshData = await refreshResponse.json();
+
             setSubscription(refreshData);
 
             // Show success message
@@ -618,7 +623,11 @@ export default function BillingPage() {
 
           <button
             onClick={handlePayment}
-            disabled={processingPayment || selectedPlan === subscription?.plan}
+            disabled={
+              processingPayment ||
+              (subscription?.status === 'active' &&
+                selectedPlan === subscription?.plan)
+            }
             className={`px-6 py-2 rounded-md font-medium ${
               selectedPlan === 'enterprise'
                 ? 'bg-purple-600 hover:bg-purple-700 text-white'
@@ -634,6 +643,8 @@ export default function BillingPage() {
               <Link href={'/contact'}>Contact Sales</Link>
             ) : selectedPlan === subscription?.plan ? (
               'Current Plan'
+            ) : subscription?.status === 'inactive' ? (
+              'Renew Plan'
             ) : (
               `Upgrade to ${
                 selectedPlan.charAt(0).toUpperCase() + selectedPlan.slice(1)

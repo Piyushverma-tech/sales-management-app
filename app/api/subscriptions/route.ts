@@ -63,14 +63,13 @@ export async function GET() {
     const planDetails =
       SUBSCRIPTION_PLANS[
         subscription.plan.toUpperCase() as keyof typeof SUBSCRIPTION_PLANS
-      ];
+      ] || SUBSCRIPTION_PLANS.TRIAL;
 
-    if (subscription.status === 'trialing') {
+    if (['trialing', 'active'].includes(subscription.status)) {
       const endDate = new Date(subscription.endDate);
       const today = new Date();
 
       if (today > endDate) {
-        // Update the subscription status to inactive
         subscription.status = 'inactive';
         await subscription.save();
 
