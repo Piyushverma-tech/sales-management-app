@@ -243,7 +243,7 @@ export default function DashboardMetrics() {
         title: 'Plan',
         value:
           subscription.status == 'inactive'
-            ? 'inactive'
+            ? 'N/A'
             : subscription.plan.charAt(0).toUpperCase() +
               subscription.plan.slice(1),
         icon: (
