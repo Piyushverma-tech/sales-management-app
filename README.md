@@ -9,6 +9,7 @@ A modern, full-stack SaaS web application for managing sales data, teams, and or
 - **Sales Data Management**: Track and manage sales data with CRUD operations
 - **Data Encryption**: Sensitive sales data is encrypted in the database
 - **Dashboard**: Visualize sales data with charts and analytics
+- **AI Advance Analytics**: AI to provide in-depth analytics of sales data
 - **Role-based Access Control**: Different permissions for organization admins and members
 - **Responsive Design**: Modern UI that works on all devices
 - **SaaS Subscription Plans**: Multiple pricing tiers with feature limitations
@@ -23,7 +24,7 @@ SaleX offers three flexible subscription plans to meet the needs of different te
    - Up to 5 team members
    - 1,000 deals
    - Basic analytics
-   - Email support
+   - Trend charts
    - CSV exports
 
 2. **Professional Plan** - ₹999/month
@@ -32,7 +33,7 @@ SaleX offers three flexible subscription plans to meet the needs of different te
    - 10,000 deals
    - Advanced analytics with trends
    - Priority support
-   - API access
+   - API access (coming soon)
    - Custom dashboard
 
 3. **Enterprise Plan** - Custom pricing
@@ -123,6 +124,9 @@ ENCRYPTION_IV=your_encryption_iv
 # Razorpay (for payment processing)
 RAZORPAY_TEST_KEY=your_razorpay_key_id
 RAZORPAY_TEST_KEY_SECRET=your_razorpay_key_secret
+
+# Gemini API (for advance analytics)
+GEMINI_API_KEY=your_API_KEY
 ```
 
 ### Installation
