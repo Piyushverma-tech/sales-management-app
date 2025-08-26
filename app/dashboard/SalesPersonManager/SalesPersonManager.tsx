@@ -59,46 +59,46 @@ export function SalesPersonManager() {
 
     setSyncing(true);
     setSyncResult(null);
-    
+
     try {
       // Call new API endpoint to sync salespeople
       const response = await fetch('/api/salespeople/sync');
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.error || 'Failed to synchronize salespeople');
       }
-      
+
       // Success - show the results
       const { syncResults } = data;
       const message = `Sync completed: ${syncResults.added} added, ${syncResults.updated} updated, ${syncResults.removed} removed`;
-      
+
       toast.success('Salespeople Synchronized', {
-        description: message
+        description: message,
       });
-      
+
       setSyncResult({
         success: true,
-        message
+        message,
       });
-      
+
       // Reload salespeople list
       await loadSalesPersons();
-      
     } catch (error) {
       console.error('Error synchronizing salespeople:', error);
-      
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : 'Failed to synchronize salespeople';
-      
+
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Failed to synchronize salespeople';
+
       toast.error('Synchronization Failed', {
-        description: errorMessage
+        description: errorMessage,
       });
-      
+
       setSyncResult({
         success: false,
-        message: errorMessage
+        message: errorMessage,
       });
     } finally {
       setSyncing(false);
@@ -113,10 +113,10 @@ export function SalesPersonManager() {
       <DialogContent className="max-w-lg overflow-visible">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center ">
-            Sales Team
+            {organization?.name || 'Organization'}
           </DialogTitle>
           <DialogDescription className="text-center text-sm">
-            Manage your organization&apos;s sales team members
+            Manage your organization & sales team members
           </DialogDescription>
         </DialogHeader>
 
@@ -129,6 +129,8 @@ export function SalesPersonManager() {
             onMouseDown={handleClerkUIClick}
           >
             <OrganizationSwitcher
+              afterCreateOrganizationUrl="/dashboard"
+              afterSelectOrganizationUrl="/dashboard"
               appearance={{
                 elements: {
                   organizationSwitcherTrigger:
@@ -171,9 +173,11 @@ export function SalesPersonManager() {
               </div>
 
               {syncResult && (
-                <div className={`text-sm flex items-center gap-1 self-end ${
-                  syncResult.success ? 'text-green-500' : 'text-red-500'
-                }`}>
+                <div
+                  className={`text-sm flex items-center gap-1 self-end ${
+                    syncResult.success ? 'text-green-500' : 'text-red-500'
+                  }`}
+                >
                   {syncResult.success ? (
                     <Check className="h-3 w-3" />
                   ) : (
@@ -183,7 +187,7 @@ export function SalesPersonManager() {
                 </div>
               )}
             </div>
-            
+
             <div className="mt-4">
               <ScrollArea className="h-64 pr-4">
                 <div className="space-y-4">

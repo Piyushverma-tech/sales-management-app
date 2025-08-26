@@ -8,6 +8,7 @@ export interface SubscriptionData {
   features?: {
     maxTeamMembers: number;
     maxDeals: number;
+    TrendCharts: boolean;
     hasAdvancedAnalytics: boolean;
   };
 }
@@ -17,7 +18,11 @@ export interface SubscriptionData {
  */
 export function hasFeature(
   subscription: SubscriptionData | null,
-  featureName: 'hasAdvancedAnalytics' | 'api' | 'custom_dashboard'
+  featureName:
+    | 'hasAdvancedAnalytics'
+    | 'api'
+    | 'custom_dashboard'
+    | 'TrendCharts'
 ): boolean {
   // If no subscription data, assume no features
   if (!subscription) return false;
@@ -27,7 +32,7 @@ export function hasFeature(
     const endDate = new Date(subscription.endDate);
     const today = new Date();
     if (today > endDate) {
-      return false; // Trial expired
+      return false;
     }
   }
 
@@ -39,6 +44,10 @@ export function hasFeature(
   // Get feature from plan details
   const planFeatures =
     subscription.features || getPlanLimits(subscription.plan);
+
+  if (featureName === 'TrendCharts') {
+    return !!planFeatures.TrendCharts;
+  }
 
   if (featureName === 'hasAdvancedAnalytics') {
     return !!planFeatures.hasAdvancedAnalytics;
@@ -120,7 +129,7 @@ export function getDaysRemaining(
   const diffTime = endDate.getTime() - today.getTime();
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-  return Math.max(0, diffDays); // Don't return negative days
+  return Math.max(0, diffDays);
 }
 
 /**

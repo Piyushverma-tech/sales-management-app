@@ -3,6 +3,7 @@ export const SUBSCRIPTION_PLANS = {
     name: 'Trial',
     maxTeamMembers: 5,
     maxDeals: 100, // Limited for trial
+    TrendCharts: true, // Letting them try everything
     hasAdvancedAnalytics: true, // Letting them try everything
     durationDays: 14,
   },
@@ -12,12 +13,13 @@ export const SUBSCRIPTION_PLANS = {
     yearlyPrice: 4990, // INR yearly (2 months free)
     maxTeamMembers: 5,
     maxDeals: 1000,
+    TrendCharts: true,
     hasAdvancedAnalytics: false,
     features: [
       'Up to 5 team members',
       '1,000 deals',
       'Basic analytics',
-      'Email support',
+      'Trend Charts',
       'CSV exports',
     ],
   },
@@ -28,10 +30,11 @@ export const SUBSCRIPTION_PLANS = {
     maxTeamMembers: 15,
     maxDeals: 10000,
     hasAdvancedAnalytics: true,
+    TrendCharts: true,
     features: [
       'Up to 15 team members',
       '10,000 deals',
-      'Advanced analytics with trends',
+      'Advanced analytics with AI',
       'Priority support',
       'API access',
       'Custom dashboard',
@@ -44,6 +47,7 @@ export const SUBSCRIPTION_PLANS = {
     maxTeamMembers: Infinity,
     maxDeals: Infinity,
     hasAdvancedAnalytics: true,
+    TrendCharts: true,
     features: [
       'Unlimited team members',
       'Unlimited deals',
@@ -62,7 +66,7 @@ export const RAZORPAY_PLAN_IDS = {
   professional_yearly: 'plan_PROFESSIONAL_YEARLY',
 };
 
-// Free trial duration in days
+// Free trial duration
 export const FREE_TRIAL_DAYS = 14;
 
 // Helper to get plan limits

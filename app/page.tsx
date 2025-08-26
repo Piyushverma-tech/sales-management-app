@@ -393,8 +393,10 @@ function Testimonials() {
 }
 
 function Pricing() {
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
-  
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>(
+    'monthly'
+  );
+
   const plans = [
     {
       name: 'Starter',
@@ -406,7 +408,7 @@ function Pricing() {
         'Up to 5 team members',
         '1,000 deals',
         'Basic analytics',
-        'Email support',
+        'Trend charts',
         'CSV exports',
       ],
       cta: 'Start Free Trial',
@@ -422,7 +424,7 @@ function Pricing() {
       features: [
         'Up to 15 team members',
         '10,000 deals',
-        'Advanced analytics with trends',
+        'Advanced analytics with AI',
         'Priority support',
         'API access',
         'Custom dashboard',
@@ -461,7 +463,7 @@ function Pricing() {
             Choose the plan that works best for your team. All plans include a
             14-day free trial.
           </p>
-          
+
           {/* Billing toggle */}
           <div className="mt-6 inline-flex items-center bg-gray-800 p-1 rounded-lg">
             <button
@@ -538,7 +540,9 @@ function Pricing() {
                 ))}
               </ul>
               <div className="mt-6 sm:mt-8">
-                <Link href={plan.planId === 'enterprise' ? '/contact' : '/sign-up'}>
+                <Link
+                  href={plan.planId === 'enterprise' ? '/contact' : '/sign-up'}
+                >
                   <button
                     className={`w-full py-2 sm:py-3 px-4 rounded-lg font-medium transition-colors text-sm sm:text-base ${
                       plan.popular

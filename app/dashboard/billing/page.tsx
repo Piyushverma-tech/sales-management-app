@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useOrganization } from '@clerk/nextjs';
-import { Loader2, Check, AlertCircle } from 'lucide-react';
+import { Loader2, Check, AlertCircle, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import Script from 'next/script';
 
@@ -288,7 +288,7 @@ export default function BillingPage() {
   }
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 poppins">
+    <div className="p-4 sm:p-6 lg:p-12 poppins">
       {/* Load Razorpay SDK */}
       <Script
         src="https://checkout.razorpay.com/v1/checkout.js"
@@ -298,6 +298,9 @@ export default function BillingPage() {
       />
 
       <div className="max-w-5xl mx-auto">
+        <Link href="/dashboard">
+          <ArrowLeft />
+        </Link>
         {/* Header Section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold tracking-wide mb-2">
@@ -402,7 +405,7 @@ export default function BillingPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {/* Starter plan */}
           <div
-            className={`relative bg-gradient-to-br from-gray-800/60 to-gray-700/60 backdrop-blur-sm rounded-2xl p-8 border-2 cursor-pointer transition-all duration-300   group ${
+            className={`relative bg-gradient-to-br from-gray-800/60 to-transparent backdrop-blur-sm rounded-2xl p-8 border-2 cursor-pointer transition-all duration-300   group ${
               selectedPlan === 'starter'
                 ? 'border-blue-400'
                 : 'border-gray-600/30 hover:border-gray-500/50'
@@ -448,7 +451,7 @@ export default function BillingPage() {
                 { icon: '👥', text: 'Up to 5 team members' },
                 { icon: '📊', text: '1,000 deals' },
                 { icon: '📈', text: 'Basic analytics' },
-                { icon: '📧', text: 'Email support' },
+                { icon: '📧', text: 'Trend charts' },
               ].map((feature, index) => (
                 <div key={index} className="flex items-center">
                   <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center mr-3">
@@ -468,7 +471,7 @@ export default function BillingPage() {
 
           {/* Professional plan */}
           <div
-            className={`relative bg-gradient-to-br from-gray-800/60 to-gray-700/60 backdrop-blur-sm rounded-2xl p-8 border-2 cursor-pointer transition-all duration-300   group ${
+            className={`relative bg-gradient-to-br from-gray-800/60 to-transparent backdrop-blur-sm rounded-2xl p-8 border-2 cursor-pointer transition-all duration-300   group ${
               selectedPlan === 'professional'
                 ? 'border-blue-400'
                 : 'border-gray-600/30 hover:border-gray-500/50'
@@ -513,7 +516,7 @@ export default function BillingPage() {
               {[
                 { text: 'Up to 15 team members' },
                 { text: '10,000 deals' },
-                { text: 'Advanced analytics with trends' },
+                { text: 'Advanced analytics with AI' },
                 { text: 'Priority support' },
                 { text: 'API access' },
               ].map((feature, index) => (
@@ -535,7 +538,7 @@ export default function BillingPage() {
 
           {/* Enterprise plan */}
           <div
-            className={`relative bg-gradient-to-br from-gray-800/60 to-gray-700/60 backdrop-blur-sm rounded-2xl p-8 border-2 cursor-pointer transition-all duration-300   group ${
+            className={`relative bg-gradient-to-br from-gray-800/60 to-transparent backdrop-blur-sm rounded-2xl p-8 border-2 cursor-pointer transition-all duration-300   group ${
               selectedPlan === 'enterprise'
                 ? 'border-purple-400'
                 : 'border-gray-600/30 hover:border-gray-500/50'
@@ -668,8 +671,8 @@ export default function BillingPage() {
                 d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
               />
             </svg>
-            Secure payment processing • Cancel anytime • 30-day money-back
-            guarantee
+            To test payments, use the test card number 2305 3242 5784 8228,
+            random CVV, any future date
           </div>
         </div>
       </div>

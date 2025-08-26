@@ -62,7 +62,7 @@ const Topbar = ({
               onClick={() => setOpenSalesPersonDialog(true)}
             >
               <UserPlus className="w-4 h-4" />
-              <span className="max-sm:hidden">Sales Team</span>
+              <span className="max-sm:hidden">Organization</span>
             </Button>
 
             {/* User Button */}

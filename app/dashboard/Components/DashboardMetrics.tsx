@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useOrganization } from '@clerk/nextjs';
@@ -8,11 +8,12 @@ import {
   getDaysRemaining,
   hasFeature,
 } from '@/app/lib/subscription-utils';
-import { Loader2 } from 'lucide-react';
+import { AlertCircle, Loader2 } from 'lucide-react';
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import StatsCards from './StatsCard';
 import SalesTrendsChart from './SalesTrendChart/SalesTrendsChart';
+import AdvancedAnalytics from './AdvancedAnalytics';
 
 type SubscriptionCardProps = {
   title: string;
@@ -36,37 +37,66 @@ export default function DashboardMetrics() {
   const [teamMemberCount, setTeamMemberCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const { organization, isLoaded } = useOrganization();
+  const [noticeMessage, setNoticeMessage] = useState<string | null>(null);
+  const noticeTimerRef = useRef<number | null>(null);
+
+  const showNotice = (message: string) => {
+    setNoticeMessage(message);
+    if (noticeTimerRef.current) {
+      window.clearTimeout(noticeTimerRef.current);
+    }
+    noticeTimerRef.current = window.setTimeout(() => {
+      setNoticeMessage(null);
+      noticeTimerRef.current = null;
+    }, 3000);
+  };
 
   // Check if advanced analytics are available
   const hasAdvancedAnalytics = hasFeature(subscription, 'hasAdvancedAnalytics');
+  const hasTrendCharts = hasFeature(subscription, 'TrendCharts');
 
-  // Set stats as active tab if subscription doesn't include advanced analytics
+  // Access rules
+  const canAccessTrends = !organization || hasTrendCharts; // Personal user always gets Trends
+  const canAccessAdvanced = !!organization && hasAdvancedAnalytics; // Advanced for professional or higher plan
+  const canAccessSubscription = !!organization; // Subscription tab only for orgs
+
+  // Keep user on accessible tab if current becomes unavailable
   useEffect(() => {
-    if (activeTab === 'trends' && !hasAdvancedAnalytics) {
+    if (activeTab === 'trends' && !canAccessTrends) {
       setActiveTab('stats');
     }
-  }, [subscription, activeTab]);
+    if (activeTab === 'advanced' && !canAccessAdvanced) {
+      setActiveTab('stats');
+    }
+    if (activeTab === 'subscription' && !canAccessSubscription) {
+      setActiveTab('stats');
+    }
+  }, [
+    subscription,
+    activeTab,
+    canAccessTrends,
+    canAccessAdvanced,
+    canAccessSubscription,
+  ]);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        // For organization users, fetch subscription data
-        if (organization) {
-          // Fetch subscription data
-          const subResponse = await fetch('/api/subscriptions');
-          if (subResponse.ok) {
-            const subData = await subResponse.json();
-            setSubscription(subData);
-          }
+        // Fetch subscription data (for both personal and organization)
+        const subResponse = await fetch('/api/subscriptions');
+        if (subResponse.ok) {
+          const subData = await subResponse.json();
+          setSubscription(subData);
+        }
 
-          // Fetch sales data count
+        // Org-only usage metrics
+        if (organization) {
           const salesResponse = await fetch('/api/sales-data/count');
           if (salesResponse.ok) {
             const { count } = await salesResponse.json();
             setDealCount(count);
           }
 
-          // Fetch team members count
           const teamResponse = await fetch('/api/sales-persons');
           if (teamResponse.ok) {
             const data = await teamResponse.json();
@@ -276,56 +306,110 @@ export default function DashboardMetrics() {
         <Tabs
           defaultValue="stats"
           value={activeTab}
-          onValueChange={setActiveTab}
+          onValueChange={(val) => {
+            if (val === 'trends') {
+              if (!canAccessTrends) {
+                showNotice('Upgrade to Starter to use Sales Trend.');
+                return;
+              }
+            }
+            if (val === 'advanced') {
+              if (!canAccessAdvanced) {
+                showNotice(
+                  !organization
+                    ? 'This feature is only available for Organizations.'
+                    : 'Upgrade to Professional Plan to use Advanced Analytics.'
+                );
+                return;
+              }
+            }
+            if (val === 'subscription') {
+              if (!canAccessSubscription) {
+                showNotice('Create an organization to manage subscription.');
+                return;
+              }
+            }
+            setActiveTab(val);
+          }}
           className="w-full"
         >
-          <div className="flex justify-between items-center">
-            <TabsList
-              className={`grid ${
-                organization
-                  ? hasAdvancedAnalytics
-                    ? 'grid-cols-3 w-[380px]'
-                    : 'grid-cols-2 w-[250px]'
-                  : 'grid-cols-1 w-[150px]'
-              }`}
-            >
-              <TabsTrigger value="stats">Sales Stats</TabsTrigger>
-              {hasAdvancedAnalytics && (
-                <TabsTrigger value="trends">Sales Trend</TabsTrigger>
-              )}
-              {organization && (
-                <TabsTrigger value="subscription">Subscription</TabsTrigger>
-              )}
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <TabsList className="w-full h-auto sm:w-auto grid grid-cols-8 sm:flex sm:grid-cols-none gap-1">
+              <TabsTrigger
+                value="stats"
+                className="flex items-center gap-2 px-4 py-1 col-span-2 sm:col-span-1"
+              >
+                <span className="hidden sm:inline">Sales Stats</span>
+                <span className="sm:hidden">Stats</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="trends"
+                className={`flex items-center gap-2 px-4 py-1 col-span-2 sm:col-span-1 ${
+                  canAccessTrends ? '' : 'opacity-50 cursor-not-allowed'
+                }`}
+              >
+                <span className="hidden sm:inline">Sales Trend</span>
+                <span className="sm:hidden">Trends</span>
+              </TabsTrigger>
+
+              <TabsTrigger
+                value="advanced"
+                className={`flex items-center gap-2 px-4 py-1 col-span-2 sm:col-span-1 ${
+                  canAccessAdvanced ? '' : 'opacity-50 cursor-not-allowed'
+                }`}
+              >
+                <span className="hidden sm:inline">Advanced Analytics</span>
+                <span className="sm:hidden">Analytics</span>
+              </TabsTrigger>
+
+              <TabsTrigger
+                value="subscription"
+                className={`flex items-center gap-2 px-4 py-1 col-span-2 sm:col-span-1 ${
+                  canAccessSubscription ? '' : 'opacity-50 cursor-not-allowed'
+                }`}
+              >
+                <span className="hidden sm:inline">Subscription</span>
+                <span className="sm:hidden">Plan</span>
+              </TabsTrigger>
             </TabsList>
 
             {organization && activeTab === 'subscription' && (
               <Link
                 href="/dashboard/billing"
-                className="text-sm text-primary hover:underline"
+                className="text-sm text-primary hover:underline whitespace-nowrap"
               >
                 {subscription?.status === 'inactive'
                   ? 'Reactivate Now'
                   : 'Manage Subscription'}
               </Link>
             )}
+            {noticeMessage && (
+              <div className="w-full text-xs  flex items-center gap-2 text-blue-500 bg-blue-600/20 rounded px-3 py-2">
+                <AlertCircle size={16} /> {noticeMessage}
+              </div>
+            )}
           </div>
 
           {/* Sales Stats Tab */}
-          <TabsContent value="stats" className="mt-4">
+          <TabsContent value="stats" className="mt-6">
             <StatsCards />
           </TabsContent>
 
-          {/* Sales Trend Tab - Only shown if subscription allows */}
+          <TabsContent value="trends" className="mt-6">
+            <SalesTrendsChart />
+          </TabsContent>
+
+          {/* Advanced Analytics Tab - Only shown if subscription allows */}
           {hasAdvancedAnalytics && (
-            <TabsContent value="trends" className="mt-4">
-              <SalesTrendsChart />
+            <TabsContent value="advanced" className="mt-6">
+              <AdvancedAnalytics />
             </TabsContent>
           )}
 
           {/* Subscription Tab - Only for organization users */}
           {organization && (
-            <TabsContent value="subscription" className="mt-4">
-              <div className="grid grid-cols-4 max-sm:grid-cols-1 gap-6 p-4">
+            <TabsContent value="subscription" className="mt-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {subscriptionMetrics.map((metric, index) => (
                   <SubscriptionCard key={index} {...metric} />
                 ))}
