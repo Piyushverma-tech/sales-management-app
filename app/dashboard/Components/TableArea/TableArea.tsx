@@ -28,6 +28,7 @@ import { useSalesStore } from '@/app/useSalesStore';
 import { SaleType } from '@/app/types';
 import Papa from 'papaparse';
 import { Plus } from 'lucide-react';
+import { TableAreaShimmer } from '@/app/components/DashboardShimmer';
 
 export interface PaginationType {
   pageIndex: number;
@@ -35,7 +36,13 @@ export interface PaginationType {
 }
 
 export default function TableArea({ searchQuery }: { searchQuery: string }) {
-  const { allSales, loadAllSales, isLoading, noOrganization, setOpenDealDialog } = useSalesStore();
+  const {
+    allSales,
+    loadAllSales,
+    isLoading,
+    noOrganization,
+    setOpenDealDialog,
+  } = useSalesStore();
   const tabItems = [
     { value: 'All', label: 'All Deals', count: allSales.length },
     {
@@ -154,9 +161,12 @@ export default function TableArea({ searchQuery }: { searchQuery: string }) {
     return (
       <Card className="sm:m-6 shadow-none overflow-hidden">
         <div className="p-8 flex flex-col items-center justify-center min-h-[300px]">
-          <h3 className="text-xl font-medium text-gray-800 mb-2">No Organization Selected</h3>
+          <h3 className="text-xl font-medium text-gray-800 mb-2">
+            No Organization Selected
+          </h3>
           <p className="text-gray-500 mb-6 text-center">
-            Please select an organization using the organization switcher to view and manage sales data.
+            Please select an organization using the organization switcher to
+            view and manage sales data.
           </p>
           <Button
             onClick={() => setOpenDealDialog(true)}
@@ -174,10 +184,7 @@ export default function TableArea({ searchQuery }: { searchQuery: string }) {
   if (isLoading) {
     return (
       <Card className="sm:m-6 shadow-none overflow-hidden">
-        <div className="p-8 flex flex-col items-center justify-center min-h-[300px]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mb-4"></div>
-          <p className="text-gray-500">Loading sales data...</p>
-        </div>
+        <TableAreaShimmer />
       </Card>
     );
   }
@@ -187,7 +194,9 @@ export default function TableArea({ searchQuery }: { searchQuery: string }) {
     return (
       <Card className="sm:m-6 shadow-none overflow-hidden">
         <div className="p-8 flex flex-col items-center justify-center min-h-[300px]">
-          <h3 className="text-xl font-medium text-gray-800 mb-2">No Sales Data</h3>
+          <h3 className="text-xl font-medium text-gray-800 mb-2">
+            No Sales Data
+          </h3>
           <p className="text-gray-500 mb-6">
             Start by adding your first sale to this organization.
           </p>

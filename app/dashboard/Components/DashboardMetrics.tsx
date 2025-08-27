@@ -8,12 +8,13 @@ import {
   getDaysRemaining,
   hasFeature,
 } from '@/app/lib/subscription-utils';
-import { AlertCircle, Loader2 } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import StatsCards from './StatsCard';
 import SalesTrendsChart from './SalesTrendChart/SalesTrendsChart';
 import AdvancedAnalytics from './AdvancedAnalytics';
+import { DashboardShimmer } from '@/app/components/DashboardShimmer';
 
 type SubscriptionCardProps = {
   title: string;
@@ -119,17 +120,6 @@ export default function DashboardMetrics() {
       fetchData();
     }
   }, [organization, isLoaded]);
-
-  // When data is loading
-  if (loading) {
-    return (
-      <Card className="p-4 shadow-none sm:m-5 my-6">
-        <div className="flex justify-center items-center py-6">
-          <Loader2 className="size-6 animate-spin text-primary" />
-        </div>
-      </Card>
-    );
-  }
 
   // Prepare subscription metrics
   let subscriptionMetrics: SubscriptionCardProps[] = [];
@@ -302,122 +292,126 @@ export default function DashboardMetrics() {
 
   return (
     <Card className="p-4 shadow-none sm:m-5 my-6">
-      <div className="mb-4">
-        <Tabs
-          defaultValue="stats"
-          value={activeTab}
-          onValueChange={(val) => {
-            if (val === 'trends') {
-              if (!canAccessTrends) {
-                showNotice('Upgrade to Starter to use Sales Trend.');
-                return;
+      {loading ? (
+        <DashboardShimmer />
+      ) : (
+        <div className="mb-4">
+          <Tabs
+            defaultValue="stats"
+            value={activeTab}
+            onValueChange={(val) => {
+              if (val === 'trends') {
+                if (!canAccessTrends) {
+                  showNotice('Upgrade to Starter to use Sales Trend.');
+                  return;
+                }
               }
-            }
-            if (val === 'advanced') {
-              if (!canAccessAdvanced) {
-                showNotice(
-                  !organization
-                    ? 'This feature is only available for Organizations.'
-                    : 'Upgrade to Professional Plan to use Advanced Analytics.'
-                );
-                return;
+              if (val === 'advanced') {
+                if (!canAccessAdvanced) {
+                  showNotice(
+                    !organization
+                      ? 'This feature is only available for Organizations.'
+                      : 'Upgrade to Professional Plan to use Advanced Analytics.'
+                  );
+                  return;
+                }
               }
-            }
-            if (val === 'subscription') {
-              if (!canAccessSubscription) {
-                showNotice('Create an organization to manage subscription.');
-                return;
+              if (val === 'subscription') {
+                if (!canAccessSubscription) {
+                  showNotice('Create an organization to manage subscription.');
+                  return;
+                }
               }
-            }
-            setActiveTab(val);
-          }}
-          className="w-full"
-        >
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-            <TabsList className="w-full h-auto sm:w-auto grid grid-cols-8 sm:flex sm:grid-cols-none gap-1">
-              <TabsTrigger
-                value="stats"
-                className="flex items-center gap-2 px-4 py-1 col-span-2 sm:col-span-1"
-              >
-                <span className="hidden sm:inline">Sales Stats</span>
-                <span className="sm:hidden">Stats</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="trends"
-                className={`flex items-center gap-2 px-4 py-1 col-span-2 sm:col-span-1 ${
-                  canAccessTrends ? '' : 'opacity-50 cursor-not-allowed'
-                }`}
-              >
-                <span className="hidden sm:inline">Sales Trend</span>
-                <span className="sm:hidden">Trends</span>
-              </TabsTrigger>
+              setActiveTab(val);
+            }}
+            className="w-full"
+          >
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+              <TabsList className="w-full h-auto sm:w-auto grid grid-cols-8 sm:flex sm:grid-cols-none gap-1">
+                <TabsTrigger
+                  value="stats"
+                  className="flex items-center gap-2 px-4 py-1 col-span-2 sm:col-span-1"
+                >
+                  <span className="hidden sm:inline">Sales Stats</span>
+                  <span className="sm:hidden">Stats</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value="trends"
+                  className={`flex items-center gap-2 px-4 py-1 col-span-2 sm:col-span-1 ${
+                    canAccessTrends ? '' : 'opacity-50 cursor-not-allowed'
+                  }`}
+                >
+                  <span className="hidden sm:inline">Sales Trend</span>
+                  <span className="sm:hidden">Trends</span>
+                </TabsTrigger>
 
-              <TabsTrigger
-                value="advanced"
-                className={`flex items-center gap-2 px-4 py-1 col-span-2 sm:col-span-1 ${
-                  canAccessAdvanced ? '' : 'opacity-50 cursor-not-allowed'
-                }`}
-              >
-                <span className="hidden sm:inline">Advanced Analytics</span>
-                <span className="sm:hidden">Analytics</span>
-              </TabsTrigger>
+                <TabsTrigger
+                  value="advanced"
+                  className={`flex items-center gap-2 px-4 py-1 col-span-2 sm:col-span-1 ${
+                    canAccessAdvanced ? '' : 'opacity-50 cursor-not-allowed'
+                  }`}
+                >
+                  <span className="hidden sm:inline">Advanced Analytics</span>
+                  <span className="sm:hidden">Analytics</span>
+                </TabsTrigger>
 
-              <TabsTrigger
-                value="subscription"
-                className={`flex items-center gap-2 px-4 py-1 col-span-2 sm:col-span-1 ${
-                  canAccessSubscription ? '' : 'opacity-50 cursor-not-allowed'
-                }`}
-              >
-                <span className="hidden sm:inline">Subscription</span>
-                <span className="sm:hidden">Plan</span>
-              </TabsTrigger>
-            </TabsList>
+                <TabsTrigger
+                  value="subscription"
+                  className={`flex items-center gap-2 px-4 py-1 col-span-2 sm:col-span-1 ${
+                    canAccessSubscription ? '' : 'opacity-50 cursor-not-allowed'
+                  }`}
+                >
+                  <span className="hidden sm:inline">Subscription</span>
+                  <span className="sm:hidden">Plan</span>
+                </TabsTrigger>
+              </TabsList>
 
-            {organization && activeTab === 'subscription' && (
-              <Link
-                href="/dashboard/billing"
-                className="text-sm text-primary hover:underline whitespace-nowrap"
-              >
-                {subscription?.status === 'inactive'
-                  ? 'Reactivate Now'
-                  : 'Manage Subscription'}
-              </Link>
-            )}
-            {noticeMessage && (
-              <div className="w-full text-xs  flex items-center gap-2 text-blue-500 bg-blue-600/20 rounded px-3 py-2">
-                <AlertCircle size={16} /> {noticeMessage}
-              </div>
-            )}
-          </div>
+              {organization && activeTab === 'subscription' && (
+                <Link
+                  href="/dashboard/billing"
+                  className="text-sm text-primary hover:underline whitespace-nowrap"
+                >
+                  {subscription?.status === 'inactive'
+                    ? 'Reactivate Now'
+                    : 'Manage Subscription'}
+                </Link>
+              )}
+              {noticeMessage && (
+                <div className="w-full text-xs  flex items-center gap-2 text-blue-500 bg-blue-600/20 rounded px-3 py-2">
+                  <AlertCircle size={16} /> {noticeMessage}
+                </div>
+              )}
+            </div>
 
-          {/* Sales Stats Tab */}
-          <TabsContent value="stats" className="mt-6">
-            <StatsCards />
-          </TabsContent>
-
-          <TabsContent value="trends" className="mt-6">
-            <SalesTrendsChart />
-          </TabsContent>
-
-          {/* Advanced Analytics Tab - Only shown if subscription allows */}
-          {hasAdvancedAnalytics && (
-            <TabsContent value="advanced" className="mt-6">
-              <AdvancedAnalytics />
+            {/* Sales Stats Tab */}
+            <TabsContent value="stats" className="mt-6">
+              <StatsCards />
             </TabsContent>
-          )}
 
-          {/* Subscription Tab - Only for organization users */}
-          {organization && (
-            <TabsContent value="subscription" className="mt-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {subscriptionMetrics.map((metric, index) => (
-                  <SubscriptionCard key={index} {...metric} />
-                ))}
-              </div>
+            <TabsContent value="trends" className="mt-6">
+              <SalesTrendsChart />
             </TabsContent>
-          )}
-        </Tabs>
-      </div>
+
+            {/* Advanced Analytics Tab - Only shown if subscription allows */}
+            {hasAdvancedAnalytics && (
+              <TabsContent value="advanced" className="mt-6">
+                <AdvancedAnalytics />
+              </TabsContent>
+            )}
+
+            {/* Subscription Tab - Only for organization users */}
+            {organization && (
+              <TabsContent value="subscription" className="mt-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {subscriptionMetrics.map((metric, index) => (
+                    <SubscriptionCard key={index} {...metric} />
+                  ))}
+                </div>
+              </TabsContent>
+            )}
+          </Tabs>
+        </div>
+      )}
     </Card>
   );
 }
