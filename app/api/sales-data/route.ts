@@ -106,6 +106,7 @@ export async function POST(req: Request) {
       contactDate,
       salesperson,
       priority,
+      note,
     } = await req.json();
 
     // Set up the sale data with proper type definition
@@ -117,6 +118,7 @@ export async function POST(req: Request) {
       contactDate: string;
       salesperson: string;
       priority: string;
+      note?: string;
       organizationId?: string; // Make this optional
     } = {
       clerkUserId: user.id,
@@ -126,6 +128,7 @@ export async function POST(req: Request) {
       contactDate,
       salesperson,
       priority,
+      ...(note ? { note } : {}),
     };
 
     // If organization is selected, add the orgId to the sale
@@ -251,6 +254,7 @@ export async function PUT(req: Request) {
       contactDate,
       salesperson,
       priority,
+      note,
     } = await req.json();
 
     // Create appropriate query based on context
@@ -283,7 +287,15 @@ export async function PUT(req: Request) {
 
     const updatedSale = await Sale.findOneAndUpdate(
       query,
-      { customerName, dealValue, status, contactDate, salesperson, priority },
+      {
+        customerName,
+        dealValue,
+        status,
+        contactDate,
+        salesperson,
+        priority,
+        note,
+      },
       { new: true }
     );
 

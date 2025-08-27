@@ -16,6 +16,7 @@ import { Status } from './_components/Status';
 import { ContactDatePicker } from './_components/Contactdate';
 import { SalesPerson } from './_components/SalesPerson';
 import { Priority } from './_components/Priority';
+import Note from './_components/Note';
 import { z } from 'zod';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -48,6 +49,7 @@ const dialogSchema = z.object({
         })
         .nonnegative('Sale value cannot be negative')
     ),
+  note: z.string().optional().default(''),
 });
 
 type FormData = z.infer<typeof dialogSchema>;
@@ -69,6 +71,8 @@ export default function SalesDialog() {
     defaultValues: {
       saleValue: 0.0,
       customerName: '',
+      note: '',
+      contactDate: new Date(),
     },
   });
 
@@ -94,13 +98,14 @@ export default function SalesDialog() {
     });
     if (!selectedSale) {
       const newSale: SaleType = {
-        clerkUserId: '',
+        clerkUserId: '', // This will be set on the server
         customerName: data.customerName,
         dealValue: formattedSaleValue,
         status: selectedStatus,
         priority: selectedPriority,
         salesperson: selectedSalesperson,
         contactDate: data.contactDate.toDateString(),
+        note: data.note || undefined,
       };
 
       // organizationId will be set on the server based on the current organization context
@@ -116,39 +121,67 @@ export default function SalesDialog() {
         priority: selectedPriority,
         status: selectedStatus,
         salesperson: selectedSalesperson,
+        note: data.note || undefined,
       };
 
       // organizationId will be preserved from the existing sale record
       await updateSale(saleToUpdate);
     }
-    handleDialogClose();
-    setOpenDealDialog(false);
   };
 
   const handleDialogClose = () => {
-    methods.reset();
+    if (!openDealDialog) return;
+
+    methods.reset({
+      saleValue: 0.0,
+      customerName: '',
+      note: '',
+      contactDate: new Date(),
+    });
     setSelectedPriority('Low');
     setSelectedStatus('In Progress');
     setSelectedSalesperson(salesPersons[0]);
+    setSelectedSale(null);
   };
 
   useEffect(() => {
-    if (selectedSale) {
-      methods.reset({
-        customerName: selectedSale.customerName,
-        contactDate: new Date(selectedSale.contactDate),
-        saleValue: parseFloat(selectedSale.dealValue.replace(/[^0-9.-]+/g, '')),
-      });
-      setSelectedPriority(selectedSale.priority);
-      setSelectedStatus(selectedSale.status);
-      setSelectedSalesperson(selectedSale.salesperson);
-    } else {
-      methods.reset({ saleValue: 0.0, customerName: '' });
+    if (openDealDialog) {
+      if (selectedSale) {
+        methods.reset({
+          customerName: selectedSale.customerName,
+          contactDate: new Date(selectedSale.contactDate),
+          saleValue: parseFloat(
+            selectedSale.dealValue.replace(/[^0-9.-]+/g, '')
+          ),
+          note: selectedSale.note || '',
+        });
+        setSelectedPriority(selectedSale.priority);
+        setSelectedStatus(selectedSale.status);
+        setSelectedSalesperson(selectedSale.salesperson);
+      } else {
+        methods.reset({
+          saleValue: 0.0,
+          customerName: '',
+          note: '',
+          contactDate: new Date(),
+        });
+        setSelectedPriority('Low');
+        setSelectedStatus('In Progress');
+        setSelectedSalesperson(salesPersons[0]);
+      }
     }
   }, [openDealDialog, selectedSale]);
 
   return (
-    <Dialog open={openDealDialog} onOpenChange={handleDialogClose}>
+    <Dialog
+      open={openDealDialog}
+      onOpenChange={(open) => {
+        if (!open) {
+          handleDialogClose();
+          setOpenDealDialog(false);
+        }
+      }}
+    >
       <DialogContent className="p-0 max-w-3xl max-h-screen sm:max-h-[90vh] max-sm:w-full overflow-auto rounded-lg poppins">
         <div className="sticky top-0 bg-background z-10 pt-6 px-8 ">
           <DialogHeader>
@@ -195,6 +228,10 @@ export default function SalesDialog() {
                   setSelectedSalesperson={setSelectedSalesperson}
                 />
               </div>
+            </div>
+
+            <div className="space-y-1">
+              <Note />
             </div>
 
             <DialogFooter className="pt-2 pb-4 sm:pb-0 flex flex-col sm:flex-row gap-3">

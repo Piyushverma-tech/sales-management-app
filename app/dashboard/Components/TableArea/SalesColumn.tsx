@@ -140,6 +140,23 @@ export const salesColumns: ColumnDef<SaleType>[] = [
     },
   },
   {
+    accessorKey: 'note',
+    header: ({ column }) => {
+      return <SortableHeader column={column} label="Note" />;
+    },
+    cell: ({ row }) => {
+      const note = row.original.note;
+      if (!note) {
+        return <span className="text-muted-foreground text-sm">-</span>;
+      }
+      return (
+        <div className="max-w-[200px] truncate" title={note}>
+          {note}
+        </div>
+      );
+    },
+  },
+  {
     id: 'actions',
     cell: ({ row }) => {
       return <ActionDropDown row={row} />;

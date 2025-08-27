@@ -31,6 +31,18 @@ const SaleSchema = new mongoose.Schema(
       enum: ['Low', 'Medium', 'High'],
       required: true,
     },
+    note: {
+      type: String,
+      required: false,
+      set: (value: string | undefined | null) => {
+        if (!value) return value;
+        return encrypt(value);
+      },
+      get: (value: string | undefined | null) => {
+        if (!value) return value;
+        return decrypt(value);
+      },
+    },
   },
   { timestamps: true, toJSON: { getters: true }, toObject: { getters: true } }
 );
