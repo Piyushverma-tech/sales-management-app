@@ -327,7 +327,7 @@ export default function DashboardMetrics() {
             className="w-full"
           >
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-              <TabsList className="w-full h-auto sm:w-auto grid grid-cols-8 sm:flex sm:grid-cols-none gap-1">
+              <TabsList className="w-full h-auto sm:w-auto bg-primary-foreground grid grid-cols-8 sm:flex sm:grid-cols-none gap-1">
                 <TabsTrigger
                   value="stats"
                   className="flex items-center gap-2 px-4 py-1 col-span-2 sm:col-span-1"

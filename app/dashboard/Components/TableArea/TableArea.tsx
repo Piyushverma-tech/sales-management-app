@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useEffect, useMemo, useState } from 'react';
-import { HiDocumentDownload } from 'react-icons/hi';
+
 import PaginationArea from './Pagination/PaginationArea';
 import { salesColumns } from './SalesColumn';
 import {
@@ -27,15 +27,23 @@ import {
 import { useSalesStore } from '@/app/useSalesStore';
 import { SaleType } from '@/app/types';
 import Papa from 'papaparse';
-import { Plus } from 'lucide-react';
+import { Plus, RefreshCw, Search } from 'lucide-react';
 import { TableAreaShimmer } from '@/app/components/DashboardShimmer';
+import { Input } from '@/components/ui/input';
+import { BiExport } from 'react-icons/bi';
 
 export interface PaginationType {
   pageIndex: number;
   pageSize: number;
 }
 
-export default function TableArea({ searchQuery }: { searchQuery: string }) {
+export default function TableArea({
+  searchQuery,
+  setSearchQuery,
+}: {
+  searchQuery: string;
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+}) {
   const {
     allSales,
     loadAllSales,
@@ -43,6 +51,7 @@ export default function TableArea({ searchQuery }: { searchQuery: string }) {
     noOrganization,
     setOpenDealDialog,
   } = useSalesStore();
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const tabItems = [
     { value: 'All', label: 'All Deals', count: allSales.length },
     {
@@ -74,6 +83,12 @@ export default function TableArea({ searchQuery }: { searchQuery: string }) {
     loadAllSales();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await loadAllSales();
+    setIsRefreshing(false);
+  };
 
   //filter data based on the active tab
   const filteredData = useMemo(() => {
@@ -244,22 +259,57 @@ export default function TableArea({ searchQuery }: { searchQuery: string }) {
                 </TabsTrigger>
               ))}
             </TabsList>
-            {/* Add Sale Button */}
-
-            <Button
-              onClick={() => setOpenDealDialog(true)}
-              className="flex bg-gradient-to-r from-blue-600 to-blue-400 text-white items-center gap-2 max-lg:w-full max-sm:mt-4 ml-auto mr-4"
-            >
-              <Plus className="sm:h-4 sm:w-4 h-3.5 w-3.5" />
-              <span>Add Sale</span>
-            </Button>
-            <Button
-              onClick={downloadCSV}
-              className="flex bg-gradient-to-r from-blue-600 to-blue-400 text-white items-center gap-2 max-lg:w-full max-sm:mt-4"
-            >
-              <HiDocumentDownload className="size-5" />
-              <span>Download as CSV</span>
-            </Button>
+            <div className="flex items-center gap-2 max-lg:w-full max-sm:flex-col">
+              <div className="flex-1 w-full  hidden md:block">
+                <div className="relative w-full">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    value={searchQuery}
+                    type="search"
+                    placeholder="Search..."
+                    className="w-full pl-9 bg-muted/40 border-none"
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+              </div>
+              {/* Mobile Search Bar */}
+              <div className="md:hidden py-4 w-full">
+                <div className="relative w-full">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    value={searchQuery}
+                    type="search"
+                    placeholder="Search..."
+                    className="w-full pl-9 bg-muted/40 border-none"
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+              </div>
+              <Button
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                variant="outline"
+                className="flex items-center gap-4 max-lg:w-full"
+              >
+                <RefreshCw
+                  className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`}
+                />
+              </Button>
+              <Button
+                onClick={() => setOpenDealDialog(true)}
+                className="flex bg-gradient-to-r from-blue-600 to-blue-400 text-white font-semibold items-center gap-2 max-lg:w-full"
+              >
+                <Plus className="sm:h-4 sm:w-4 h-3.5 w-3.5" />
+                <span>Add Sale</span>
+              </Button>
+              <Button
+                onClick={downloadCSV}
+                className="flex bg-gradient-to-r from-blue-600 to-blue-400 text-white font-semibold items-center gap-2 max-lg:w-full"
+              >
+                <BiExport className="size-8" />
+                <span>Export</span>
+              </Button>
+            </div>
           </div>
 
           {tabItems.map((tab) => (

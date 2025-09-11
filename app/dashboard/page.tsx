@@ -34,8 +34,8 @@ export default function Home() {
   return (
     <div className="poppins">
       <DeleteDialog />
-      <Card className="sm:m-5 max-sm:rounded-none shadow-none">
-        <Topbar setSearchQuery={setSearchQuery} searchQuery={searchQuery} />
+      <Card className="sm:m-5 max-sm:rounded-none outline-none shadow-none">
+        <Topbar />
       </Card>
 
       {/* Show subscription banner for organizations only */}
@@ -44,7 +44,7 @@ export default function Home() {
       {/* Show metrics dashboard for both individual and organization users */}
       <DashboardMetrics />
 
-      <TableArea searchQuery={searchQuery} />
+      <TableArea searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <SalesPersonManager />
       <SalesDialog />
     </div>
