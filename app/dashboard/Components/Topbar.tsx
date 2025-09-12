@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { Moon, Sun, UserPlus } from 'lucide-react';
+import { Moon, Sun, Users } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { useTheme } from 'next-themes';
@@ -43,7 +43,7 @@ const Topbar = () => {
               size="sm"
               onClick={() => setOpenSalesPersonDialog(true)}
             >
-              <UserPlus className="w-4 h-4" />
+              <Users className="w-4 h-4" />
               <span className="max-sm:hidden">
                 {organization?.name || 'Organization'}
               </span>

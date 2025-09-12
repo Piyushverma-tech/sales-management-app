@@ -24,7 +24,7 @@ export default function ActionDropDown({ row }: { row: Row<SaleType> }) {
   const isOwnSale = user?.id === row.original.clerkUserId;
   const isOrgOwner =
     membership?.role === 'org:admin' || membership?.role === 'admin';
-  const hasEditDeletePermission = isOwnSale || isOrgOwner;
+  const hasDeletePermission = isOwnSale || isOrgOwner;
 
   // Only show available actions based on permissions
   const menuItems = useMemo(() => {
@@ -33,31 +33,29 @@ export default function ActionDropDown({ row }: { row: Row<SaleType> }) {
         icon: <MdContentCopy />,
         label: 'Copy',
         className: '',
-        alwaysShow: true,
+        show: true,
       },
       {
         icon: <FaRegEdit />,
         label: 'Edit',
         className: '',
-        alwaysShow: false,
+        show: isOwnSale,
       },
       {
         icon: <MdOutlineDelete className="text-lg" />,
         label: 'Delete',
         className: 'text-red-600',
-        alwaysShow: false,
+        show: hasDeletePermission,
       },
     ];
 
     // Filter items based on permissions
-    return allItems.filter(
-      (item) => item.alwaysShow || hasEditDeletePermission
-    );
-  }, [hasEditDeletePermission]);
+    return allItems.filter((item) => item.show);
+  }, [hasDeletePermission, isOwnSale]);
 
   async function handleClickedItem(item: string) {
     if (item === 'Edit') {
-      if (!hasEditDeletePermission) {
+      if (!isOwnSale) {
         toast.error('Permission Denied', {
           description: 'You can only edit your own sales.',
           position: 'top-right',
@@ -68,7 +66,7 @@ export default function ActionDropDown({ row }: { row: Row<SaleType> }) {
       setOpenDealDialog(true);
     }
     if (item === 'Delete') {
-      if (!hasEditDeletePermission) {
+      if (!hasDeletePermission) {
         toast.error('Permission Denied', {
           description: 'You can only delete your own sales.',
           position: 'top-right',

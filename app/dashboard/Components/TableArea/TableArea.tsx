@@ -51,7 +51,7 @@ export default function TableArea({
     noOrganization,
     setOpenDealDialog,
   } = useSalesStore();
-  const [isRefreshing, setIsRefreshing] = useState(false);
+
   const tabItems = [
     { value: 'All', label: 'All Deals', count: allSales.length },
     {
@@ -85,9 +85,7 @@ export default function TableArea({
   }, []);
 
   const handleRefresh = async () => {
-    setIsRefreshing(true);
     await loadAllSales();
-    setIsRefreshing(false);
   };
 
   //filter data based on the active tab
@@ -287,13 +285,10 @@ export default function TableArea({
               </div>
               <Button
                 onClick={handleRefresh}
-                disabled={isRefreshing}
                 variant="outline"
                 className="flex items-center gap-4 max-lg:w-full"
               >
-                <RefreshCw
-                  className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`}
-                />
+                <RefreshCw />
               </Button>
               <Button
                 onClick={() => setOpenDealDialog(true)}
