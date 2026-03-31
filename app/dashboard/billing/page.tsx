@@ -328,8 +328,8 @@ export default function BillingPage() {
                     subscription.status === 'active'
                       ? 'text-green-400'
                       : subscription.status === 'trialing'
-                      ? 'text-yellow-400'
-                      : 'text-red-400'
+                        ? 'text-yellow-400'
+                        : 'text-red-400'
                   }`}
                 >
                   {subscription.status.charAt(0).toUpperCase() +
@@ -672,7 +672,7 @@ export default function BillingPage() {
               />
             </svg>
             To test payments, use the test card number 2305 3242 5784 8228,
-            random CVV, any future date
+            random CVV, any future date, any OTP
           </div>
         </div>
       </div>

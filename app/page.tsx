@@ -634,7 +634,7 @@ function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="text-2xl font-bold text-blue-500">
-              Salex
+              SaleX
             </Link>
             <p className="mt-4 text-gray-400 text-sm sm:text-base">
               Modern sales management platform for teams of all sizes.
@@ -775,7 +775,7 @@ function Footer() {
 
         <div className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm sm:text-base">
-            © 2025 Salex, Inc. All rights reserved.
+            © 2026 Built by Piyush Verma. All rights reserved.
           </p>
           <div className="mt-4 md:mt-0 flex space-x-4 sm:space-x-6">
             <Link
